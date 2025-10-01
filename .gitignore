@@ -85,3 +85,4 @@ coverage
 
 # Logs
 backend.log
+.vercel
