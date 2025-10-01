@@ -1,0 +1,70 @@
+# Cloudflare Tunnel Configuration for ConSERVERtive VPN
+
+# Main tunnel configuration
+tunnel: conservative-vpn-tunnel
+credentials-file: /etc/cloudflared/credentials.json
+
+# Ingress rules for VPN services
+ingress:
+  # Backend API
+  - hostname: api.conservative-vpn.com
+    service: http://backend:3001
+    originRequest:
+      httpHostHeader: api.conservative-vpn.com
+      originServerName: api.conservative-vpn.com
+      
+  # Frontend Web App
+  - hostname: app.conservative-vpn.com
+    service: http://frontend:3000
+    originRequest:
+      httpHostHeader: app.conservative-vpn.com
+      originServerName: app.conservative-vpn.com
+      
+  # VPN Server Management API
+  - hostname: vpn-api.conservative-vpn.com
+    service: http://vpn-orchestrator:3002
+    originRequest:
+      httpHostHeader: vpn-api.conservative-vpn.com
+      originServerName: vpn-api.conservative-vpn.com
+      
+  # Admin Dashboard
+  - hostname: admin.conservative-vpn.com
+    service: http://admin-dashboard:3003
+    originRequest:
+      httpHostHeader: admin.conservative-vpn.com
+      originServerName: admin.conservative-vpn.com
+      
+  # Catch-all rule
+  - service: http_status:404
+
+# Cloudflare Zero Trust settings
+originRequest:
+  # Enable Cloudflare Access
+  access:
+    required: true
+    teamName: conservative-vpn
+    
+  # Security headers
+  httpHostHeader: conservative-vpn.com
+  originServerName: conservative-vpn.com
+  
+  # Performance optimizations
+  keepAliveConnections: 10
+  keepAliveTimeout: 30s
+  tlsTimeout: 10s
+  
+  # Compression
+  compressionQuality: 0
+  
+# Logging configuration
+logfile: /var/log/cloudflared.log
+loglevel: info
+
+# Metrics and monitoring
+metrics: 127.0.0.1:8080
+
+# Health check
+healthcheck:
+  path: /health
+  interval: 30s
+  timeout: 5s

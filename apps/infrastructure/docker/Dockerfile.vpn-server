@@ -1,0 +1,251 @@
+# ConSERVERtive VPN Server - Docker Setup
+# This creates a local VPN server for development and testing
+
+FROM ubuntu:22.04
+
+# Set environment variables
+ENV DEBIAN_FRONTEND=noninteractive
+ENV VPN_SERVER_NAME=conservertive-dev
+ENV VPN_SERVER_IP=10.8.0.1
+ENV VPN_CLIENT_IP=10.8.0.2
+
+# Install dependencies
+RUN apt-get update && apt-get install -y \
+    openvpn \
+    easy-rsa \
+    wireguard \
+    strongswan \
+    strongswan-pki \
+    iptables \
+    curl \
+    wget \
+    git \
+    nodejs \
+    npm \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create VPN directories
+RUN mkdir -p /opt/conservertive/{logs,config,certs}
+
+# Copy VPN management API
+COPY vpn-api.js /opt/conservertive/
+COPY package.json /opt/conservertive/
+
+# Install Node.js dependencies
+WORKDIR /opt/conservertive
+RUN npm install
+
+# Create OpenVPN setup script
+RUN cat > /opt/conservertive/setup-openvpn.sh << 'EOF'
+#!/bin/bash
+set -e
+
+echo "🔐 Setting up OpenVPN server..."
+
+# Create OpenVPN directory structure
+mkdir -p /etc/openvpn/easy-rsa
+mkdir -p /etc/openvpn/server
+
+# Copy easy-rsa to OpenVPN directory
+cp -r /usr/share/easy-rsa/* /etc/openvpn/easy-rsa/
+
+# Initialize PKI
+cd /etc/openvpn/easy-rsa
+./easyrsa --batch init-pki
+
+# Build CA
+echo "ConSERVERtive CA" | ./easyrsa --batch build-ca nopass
+
+# Generate server certificate
+echo "yes" | ./easyrsa --batch gen-req conservertive-dev nopass
+echo "yes" | ./easyrsa --batch sign-req server conservertive-dev
+
+# Generate Diffie-Hellman parameters
+./easyrsa --batch gen-dh
+
+# Generate TLS auth key
+openvpn --genkey --secret ta.key
+
+# Copy certificates to server directory
+cp pki/ca.crt /etc/openvpn/server/
+cp pki/issued/conservertive-dev.crt /etc/openvpn/server/server.crt
+cp pki/private/conservertive-dev.key /etc/openvpn/server/server.key
+cp pki/dh.pem /etc/openvpn/server/
+cp ta.key /etc/openvpn/server/
+
+# Create OpenVPN server configuration
+cat > /etc/openvpn/server/server.conf << 'OPENVPNEOF'
+port 1194
+proto udp
+dev tun
+ca ca.crt
+cert server.crt
+key server.key
+dh dh.pem
+server 10.8.0.0 255.255.255.0
+ifconfig-pool-persist ipp.txt
+push "redirect-gateway def1 bypass-dhcp"
+push "dhcp-option DNS 8.8.8.8"
+push "dhcp-option DNS 8.8.4.4"
+keepalive 10 120
+tls-auth ta.key 0
+cipher AES-256-GCM
+comp-lzo
+persist-key
+persist-tun
+status openvpn-status.log
+verb 3
+explicit-exit-notify 1
+OPENVPNEOF
+
+echo "✅ OpenVPN server setup complete"
+EOF
+
+# Create WireGuard setup script
+RUN cat > /opt/conservertive/setup-wireguard.sh << 'EOF'
+#!/bin/bash
+set -e
+
+echo "⚡ Setting up WireGuard server..."
+
+    # Generate server keys
+    wg genkey | tee /etc/wireguard/server_private_key | wg pubkey > /etc/wireguard/server_public_key
+
+    # Create server configuration
+    SERVER_PRIVATE_KEY=$(cat /etc/wireguard/server_private_key)
+    cat > /etc/wireguard/wg0.conf << WGEOF
+[Interface]
+PrivateKey = $SERVER_PRIVATE_KEY
+Address = 10.7.0.1/24
+ListenPort = 51820
+PostUp = iptables -A FORWARD -i %i -j ACCEPT; iptables -A FORWARD -o %i -j ACCEPT; iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+PostDown = iptables -D FORWARD -i %i -j ACCEPT; iptables -D FORWARD -o %i -j ACCEPT; iptables -t nat -D POSTROUTING -o eth0 -j MASQUERADE
+WGEOF
+
+echo "✅ WireGuard server setup complete"
+echo "🔑 Server Public Key: $(cat /etc/wireguard/server_public_key)"
+EOF
+
+# Create IKEv2 setup script
+RUN cat > /opt/conservertive/setup-ikev2.sh << 'EOF'
+#!/bin/bash
+set -e
+
+echo "🏢 Setting up IKEv2/IPSec server..."
+
+# Generate CA private key
+ipsec pki --gen --type rsa --size 4096 --outform pem > /etc/ipsec.d/private/ca-key.pem
+
+# Generate CA certificate
+ipsec pki --self --ca --lifetime 3652 --in /etc/ipsec.d/private/ca-key.pem --dn "C=US, O=ConSERVERtive, CN=ConSERVERtive CA" --outform pem > /etc/ipsec.d/cacerts/ca-cert.pem
+
+# Generate server private key
+ipsec pki --gen --type rsa --size 4096 --outform pem > /etc/ipsec.d/private/server-key.pem
+
+# Generate server certificate
+ipsec pki --pub --in /etc/ipsec.d/private/server-key.pem --type rsa | ipsec pki --issue --lifetime 1825 --cacert /etc/ipsec.d/cacerts/ca-cert.pem --cakey /etc/ipsec.d/private/ca-key.pem --dn "C=US, O=ConSERVERtive, CN=conservertive-dev" --san conservertive-dev --flag serverAuth --flag ikeIntermediate --outform pem > /etc/ipsec.d/certs/server-cert.pem
+
+# Create ipsec.conf
+cat > /etc/ipsec.conf << 'IPSECEOF'
+config setup
+    charondebug="ike 1, knl 1, cfg 0"
+    uniqueids=no
+
+conn ikev2-vpn
+    auto=add
+    compress=no
+    type=tunnel
+    keyexchange=ikev2
+    fragmentation=yes
+    forceencaps=yes
+    dpdaction=clear
+    dpddelay=300s
+    dpdtimeout=300s
+    ike=aes256-sha256-modp2048,aes128-sha1-modp2048!
+    esp=aes256-sha256,aes128-sha1!
+    left=%any
+    leftid=conservertive-dev
+    leftcert=server-cert.pem
+    leftsendcert=always
+    leftsubnet=0.0.0.0/0
+    right=%any
+    rightid=%any
+    rightauth=eap-mschapv2
+    rightsourceip=10.10.10.0/24
+    rightdns=8.8.8.8,8.8.4.4
+    rightsendcert=never
+    eap_identity=%identity
+IPSECEOF
+
+# Create ipsec.secrets
+cat > /etc/ipsec.secrets << 'SECRETSEOF'
+: RSA server-key.pem
+SECRETSEOF
+
+# Set proper permissions
+chmod 600 /etc/ipsec.secrets
+chmod 600 /etc/ipsec.d/private/*
+
+echo "✅ IKEv2/IPSec server setup complete"
+EOF
+
+# Create startup script
+RUN cat > /opt/conservertive/start-vpn.sh << 'EOF'
+#!/bin/bash
+set -e
+
+echo "🚀 Starting ConSERVERtive VPN Server..."
+
+# Enable IP forwarding
+echo "net.ipv4.ip_forward = 1" >> /etc/sysctl.conf
+sysctl -p
+
+# Setup VPN protocols
+chmod +x /opt/conservertive/setup-openvpn.sh
+chmod +x /opt/conservertive/setup-wireguard.sh
+chmod +x /opt/conservertive/setup-ikev2.sh
+
+# Run setup scripts
+/opt/conservertive/setup-openvpn.sh
+/opt/conservertive/setup-wireguard.sh
+/opt/conservertive/setup-ikev2.sh
+
+# Start VPN services in background
+echo "🔐 Starting OpenVPN server..."
+cd /etc/openvpn/server
+openvpn --config server.conf --daemon
+
+echo "⚡ Starting WireGuard server..."
+wg-quick up wg0
+
+echo "🏢 Starting IKEv2/IPSec server..."
+ipsec start
+
+# Start VPN management API
+cd /opt/conservertive
+node vpn-api.js &
+
+echo "🎉 ConSERVERtive VPN Server is running!"
+echo "📊 Management API: http://localhost:8080/health"
+echo "🔐 OpenVPN: Port 1194 UDP"
+echo "⚡ WireGuard: Port 51820 UDP"
+echo "🏢 IKEv2/IPSec: Ports 500, 4500 UDP"
+
+# Keep container running
+tail -f /dev/null
+EOF
+
+# Make scripts executable
+RUN chmod +x /opt/conservertive/setup-openvpn.sh
+RUN chmod +x /opt/conservertive/setup-wireguard.sh
+RUN chmod +x /opt/conservertive/setup-ikev2.sh
+RUN chmod +x /opt/conservertive/start-vpn.sh
+
+# Expose VPN ports
+EXPOSE 1194/udp 51820/udp 500/udp 4500/udp 8080/tcp
+
+# Set working directory
+WORKDIR /opt/conservertive
+
+# Start VPN server
+CMD ["/opt/conservertive/start-vpn.sh"]

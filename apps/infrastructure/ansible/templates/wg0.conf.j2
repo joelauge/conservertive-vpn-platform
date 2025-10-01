@@ -1,0 +1,29 @@
+# WireGuard Configuration Template
+[Interface]
+# Server private key (will be generated)
+PrivateKey = {{ wireguard_private_key }}
+
+# Server listening port
+ListenPort = {{ wireguard_port }}
+
+# Server IP address
+Address = 10.7.0.1/24
+
+# Post-up and Post-down rules for NAT and routing
+PostUp = iptables -A FORWARD -i %i -j ACCEPT; iptables -A FORWARD -o %i -j ACCEPT; iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+PostDown = iptables -D FORWARD -i %i -j ACCEPT; iptables -D FORWARD -o %i -j ACCEPT; iptables -t nat -D POSTROUTING -o eth0 -j MASQUERADE
+
+# DNS servers
+DNS = 1.1.1.1, 1.0.0.1
+
+# MTU size
+MTU = 1420
+
+# Persistent keepalive
+PersistentKeepalive = 25
+
+# Client configurations will be added dynamically
+# [Peer]
+# PublicKey = client_public_key
+# AllowedIPs = 10.7.0.2/32
+# Endpoint = client_ip:client_port

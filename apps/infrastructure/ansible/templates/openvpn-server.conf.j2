@@ -1,0 +1,60 @@
+# OpenVPN Server Configuration Template
+port {{ openvpn_port }}
+proto udp
+dev tun
+
+# Certificate and Key files
+ca ca.crt
+cert {{ inventory_hostname }}.crt
+key {{ inventory_hostname }}.key
+dh dh2048.pem
+
+# Network configuration
+server 10.8.0.0 255.255.255.0
+ifconfig-pool-persist ipp.txt
+
+# Push routes to client
+push "redirect-gateway def1 bypass-dhcp"
+push "dhcp-option DNS 1.1.1.1"
+push "dhcp-option DNS 1.0.0.1"
+
+# Client-to-client communication
+client-to-client
+
+# Keep-alive settings
+keepalive 10 120
+
+# Cipher and authentication
+cipher AES-256-GCM
+auth SHA256
+
+# Compression
+comp-lzo
+
+# Logging
+log-append /var/log/openvpn.log
+verb 3
+
+# Security settings
+user nobody
+group nogroup
+persist-key
+persist-tun
+
+# Anti-censorship obfuscation
+# Use XOR patch for obfuscation in censored regions
+{% if ansible_hostname in groups['censored_regions'] %}
+# XOR obfuscation for censored regions
+scramble obfuscate
+{% endif %}
+
+# Performance tuning
+sndbuf 0
+rcvbuf 0
+
+# Management interface
+management localhost 7505
+
+# Status file
+status /var/log/openvpn-status.log
+status-version 2

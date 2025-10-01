@@ -1,0 +1,25 @@
+{
+  "name": "conservertive-vpn-api",
+  "version": "1.0.0",
+  "description": "ConSERVERtive VPN Management API",
+  "main": "vpn-api.js",
+  "scripts": {
+    "start": "node vpn-api.js",
+    "dev": "nodemon vpn-api.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  },
+  "keywords": [
+    "vpn",
+    "openvpn",
+    "wireguard",
+    "ikev2",
+    "conservertive"
+  ],
+  "author": "ConSERVERtive Team",
+  "license": "MIT"
+}

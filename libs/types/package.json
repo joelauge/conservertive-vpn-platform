@@ -1,0 +1,19 @@
+{
+  "name": "@conservative/types",
+  "version": "1.0.0",
+  "description": "TypeScript type definitions for ConSERVERtive VPN",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "jest",
+    "lint": "eslint src/**/*.ts"
+  },
+  "dependencies": {
+    "zod": "^3.22.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0",
+    "@types/node": "^20.0.0"
+  }
+}

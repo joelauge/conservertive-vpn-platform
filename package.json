@@ -1,0 +1,38 @@
+{
+  "name": "conservative-vpn",
+  "version": "1.0.0",
+  "description": "ConSERVERtive VPN SaaS - Combatting censorship with user-protected domain hosting",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "libs/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "nx run-many --target=build --all",
+    "test": "nx run-many --target=test --all",
+    "lint": "nx run-many --target=lint --all",
+    "dev": "nx run-many --target=dev --all --parallel",
+    "clean": "nx reset"
+  },
+  "devDependencies": {
+    "@nx/eslint": "^18.3.5",
+    "@nx/eslint-plugin": "^18.0.0",
+    "@nx/jest": "^18.3.5",
+    "@nx/js": "^18.0.0",
+    "@nx/next": "^21.6.2",
+    "@nx/node": "^18.3.5",
+    "@nx/react": "^18.3.5",
+    "@nx/react-native": "^18.3.5",
+    "@nx/workspace": "^18.0.0",
+    "@tailwindcss/forms": "^0.5.10",
+    "@tailwindcss/typography": "^0.5.19",
+    "nx": "^18.0.0",
+    "typescript": "^5.0.0",
+    "wrangler": "^4.40.3"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  }
+}

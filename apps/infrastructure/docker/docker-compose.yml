@@ -1,0 +1,66 @@
+version: '3.8'
+
+services:
+  conservertive-vpn-server:
+    build:
+      context: .
+      dockerfile: Dockerfile.vpn-server
+    container_name: conservertive-vpn-dev
+    ports:
+      - "1194:1194/udp"    # OpenVPN
+      - "51820:51820/udp"  # WireGuard
+      - "500:500/udp"      # IKEv2
+      - "4500:4500/udp"    # IKEv2 NAT-T
+      - "8080:8080/tcp"    # Management API
+    privileged: true
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    sysctls:
+      - net.ipv4.ip_forward=1
+      - net.ipv6.conf.all.forwarding=1
+    volumes:
+      - vpn-data:/etc/openvpn
+      - vpn-wireguard:/etc/wireguard
+      - vpn-ipsec:/etc/ipsec.d
+      - vpn-logs:/var/log
+    environment:
+      - VPN_SERVER_NAME=conservertive-dev
+      - VPN_SERVER_IP=10.8.0.1
+      - VPN_CLIENT_IP=10.8.0.2
+    restart: unless-stopped
+    networks:
+      - vpn-network
+
+  # Optional: VPN client for testing
+  conservertive-vpn-client:
+    build:
+      context: .
+      dockerfile: Dockerfile.vpn-client
+    container_name: conservertive-vpn-client
+    depends_on:
+      - conservertive-vpn-server
+    privileged: true
+    cap_add:
+      - NET_ADMIN
+    networks:
+      - vpn-network
+    profiles:
+      - testing
+
+volumes:
+  vpn-data:
+    driver: local
+  vpn-wireguard:
+    driver: local
+  vpn-ipsec:
+    driver: local
+  vpn-logs:
+    driver: local
+
+networks:
+  vpn-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
