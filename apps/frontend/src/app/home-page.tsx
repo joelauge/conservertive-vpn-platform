@@ -2,17 +2,24 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { 
-  ShieldCheckIcon, 
-  GlobeAltIcon, 
+import {
+  ShieldCheckIcon,
+  GlobeAltIcon,
   HeartIcon,
   ArrowRightIcon,
   CheckCircleIcon,
   StarIcon
 } from '@heroicons/react/24/outline';
+import ParallaxStars from '../components/ParallaxStars';
+import { useUser, SignInButton, SignUpButton } from '@clerk/nextjs';
 
 export default function HomePage() {
   const [isConnected, setIsConnected] = useState(false);
+  const { user, isLoaded } = useUser();
+
+  // Check if Clerk is properly configured
+  const isClerkConfigured = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY && 
+    !process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY.includes('YOUR_CLERK_PUBLISHABLE_KEY_HERE');
 
   const features = [
     {
@@ -40,9 +47,11 @@ export default function HomePage() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900">
+    <div className="min-h-screen relative">
+      <ParallaxStars />
+      
       {/* Navigation */}
-      <nav className="relative px-6 py-4">
+      <nav className="relative px-6 py-4 z-10">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center">
             <img 
@@ -55,15 +64,31 @@ export default function HomePage() {
             <a href="#features" className="text-gray-300 hover:text-white transition-colors text-base font-medium">Features</a>
             <a href="#pricing" className="text-gray-300 hover:text-white transition-colors text-base font-medium">Pricing</a>
             <a href="#impact" className="text-gray-300 hover:text-white transition-colors text-base font-medium">Impact</a>
-            <button className="btn-primary">
-              Get Started
-            </button>
+            <a href="/our-why" className="text-gray-300 hover:text-white transition-colors text-base font-medium">Our Why</a>
+            {!isClerkConfigured ? (
+              <button 
+                className="btn-primary"
+                onClick={() => alert('Please configure Clerk authentication keys in .env.local')}
+              >
+                Get Started
+              </button>
+            ) : isLoaded && user ? (
+              <a href="/dashboard" className="btn-primary">
+                Dashboard
+              </a>
+            ) : (
+              <SignUpButton mode="modal">
+                <button className="btn-primary">
+                  Get Started
+                </button>
+              </SignUpButton>
+            )}
           </div>
         </div>
       </nav>
 
       {/* Hero Section */}
-      <section className="relative px-6 py-20">
+      <section className="relative px-6 py-20 z-10">
         <div className="max-w-7xl mx-auto text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -80,11 +105,47 @@ export default function HomePage() {
               ConSERVERtive VPN provides secure, private internet access while combating censorship worldwide. 
               Every paid account sponsors a free user in a censored country.
             </p>
+            
+            {/* Hero Image */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.8, delay: 0.3 }}
+              className="mb-12 flex justify-center"
+            >
+              <img 
+                src="/CS_Apps.png" 
+                alt="ConSERVERtive Apps" 
+                className="max-w-full h-auto rounded-lg"
+                style={{ maxHeight: '600px' }}
+              />
+            </motion.div>
+            
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button className="bg-gradient-primary hover:opacity-90 text-white px-8 py-4 rounded-lg text-lg font-semibold transition-all transform hover:scale-105">
-                Start Free Trial
-                <ArrowRightIcon className="inline-block ml-2 h-5 w-5" />
-              </button>
+              {!isClerkConfigured ? (
+                <button 
+                  className="bg-gradient-primary hover:opacity-90 text-white px-8 py-4 rounded-lg text-lg font-semibold transition-all transform hover:scale-105"
+                  onClick={() => alert('Please configure Clerk authentication keys in .env.local')}
+                >
+                  Start Free Trial
+                  <ArrowRightIcon className="inline-block ml-2 h-5 w-5" />
+                </button>
+              ) : isLoaded && user ? (
+                <a 
+                  href="/dashboard"
+                  className="bg-gradient-primary hover:opacity-90 text-white px-8 py-4 rounded-lg text-lg font-semibold transition-all transform hover:scale-105"
+                >
+                  Go to Dashboard
+                  <ArrowRightIcon className="inline-block ml-2 h-5 w-5" />
+                </a>
+              ) : (
+                <SignUpButton mode="modal">
+                  <button className="bg-gradient-primary hover:opacity-90 text-white px-8 py-4 rounded-lg text-lg font-semibold transition-all transform hover:scale-105">
+                    Start Free Trial
+                    <ArrowRightIcon className="inline-block ml-2 h-5 w-5" />
+                  </button>
+                </SignUpButton>
+              )}
               <button className="border-2 border-white text-white hover:bg-white hover:text-gray-900 px-8 py-4 rounded-lg text-lg font-semibold transition-all">
                 Learn More
               </button>
@@ -94,7 +155,7 @@ export default function HomePage() {
       </section>
 
       {/* Stats Section */}
-      <section className="px-6 py-16">
+      <section className="px-6 py-16 relative z-10">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {stats.map((stat, index) => (
@@ -116,7 +177,7 @@ export default function HomePage() {
       </section>
 
       {/* Features Section */}
-      <section id="features" className="px-6 py-20">
+      <section id="features" className="px-6 py-20 relative z-10">
         <div className="max-w-7xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -124,9 +185,13 @@ export default function HomePage() {
             transition={{ duration: 0.8 }}
             className="text-center mb-16"
           >
-            <h2 className="text-4xl md:text-5xl font-semibold text-white mb-6 leading-tight flex items-center justify-center gap-3">
-              Why Choose <img src="/conservertive_logo_light_500px.png" alt="ConSERVERtive" className="h-12 md:h-16 w-auto" />?
-            </h2>
+                <h2 className="text-4xl md:text-5xl font-semibold text-white mb-6 leading-tight flex flex-col md:flex-row items-center justify-center gap-3">
+                  <span className="flex flex-col md:flex-row items-center gap-3">
+                    <span>Why Choose</span>
+                    <img src="/conservertive_logo_light_500px.png" alt="ConSERVERtive" className="h-12 md:h-16 w-auto" />
+                    <span>?</span>
+                  </span>
+                </h2>
             <p className="text-xl text-gray-300 max-w-2xl mx-auto font-light leading-relaxed">
               We're not just another VPN. We're a movement for internet freedom.
             </p>
@@ -150,8 +215,186 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Pricing Section */}
-      <section id="pricing" className="px-6 py-20">
+       {/* VPN Protocols Section */}
+       <section className="px-6 py-20 bg-gradient-to-r from-gray-800/30 to-gray-900/30 relative z-10">
+        <div className="max-w-7xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-4xl md:text-5xl font-semibold text-white mb-6 leading-tight">
+              Enterprise-Grade VPN Protocols
+            </h2>
+            <p className="text-xl text-gray-300 max-w-3xl mx-auto font-light leading-relaxed">
+              Choose from three cutting-edge protocols, each optimized for different use cases and security requirements.
+            </p>
+          </motion.div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            {/* OpenVPN */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.1 }}
+              className="card bg-white/10 backdrop-blur-sm border-white/20"
+            >
+              <div className="text-center mb-6">
+                <div className="w-16 h-16 bg-blue-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <ShieldCheckIcon className="h-8 w-8 text-blue-400" />
+                </div>
+                <h3 className="text-2xl font-semibold text-white mb-2">OpenVPN</h3>
+                <span className="text-sm text-blue-400 font-semibold">Port 1194</span>
+              </div>
+              <div className="space-y-4">
+                <div className="flex items-start space-x-3">
+                  <CheckCircleIcon className="h-5 w-5 text-green-400 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <h4 className="text-white font-semibold">Battle-Tested Security</h4>
+                    <p className="text-gray-300 text-sm">20+ years of proven reliability in enterprise environments</p>
+                  </div>
+                </div>
+                <div className="flex items-start space-x-3">
+                  <CheckCircleIcon className="h-5 w-5 text-green-400 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <h4 className="text-white font-semibold">Universal Compatibility</h4>
+                    <p className="text-gray-300 text-sm">Works on all devices and operating systems</p>
+                  </div>
+                </div>
+                <div className="flex items-start space-x-3">
+                  <CheckCircleIcon className="h-5 w-5 text-green-400 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <h4 className="text-white font-semibold">AES-256 Encryption</h4>
+                    <p className="text-gray-300 text-sm">Military-grade encryption with perfect forward secrecy</p>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* WireGuard */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="card bg-white/10 backdrop-blur-sm border-white/20"
+            >
+              <div className="text-center mb-6">
+                <div className="w-16 h-16 bg-purple-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <StarIcon className="h-8 w-8 text-purple-400" />
+                </div>
+                <h3 className="text-2xl font-semibold text-white mb-2">WireGuard</h3>
+                <span className="text-sm text-purple-400 font-semibold">Port 51820</span>
+              </div>
+              <div className="space-y-4">
+                <div className="flex items-start space-x-3">
+                  <CheckCircleIcon className="h-5 w-5 text-green-400 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <h4 className="text-white font-semibold">Lightning Fast</h4>
+                    <p className="text-gray-300 text-sm">Next-generation protocol with minimal overhead</p>
+                  </div>
+                </div>
+                <div className="flex items-start space-x-3">
+                  <CheckCircleIcon className="h-5 w-5 text-green-400 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <h4 className="text-white font-semibold">Modern Cryptography</h4>
+                    <p className="text-gray-300 text-sm">ChaCha20 encryption with Poly1305 authentication</p>
+                  </div>
+                </div>
+                <div className="flex items-start space-x-3">
+                  <CheckCircleIcon className="h-5 w-5 text-green-400 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <h4 className="text-white font-semibold">Mobile Optimized</h4>
+                    <p className="text-gray-300 text-sm">Seamless reconnection and battery efficiency</p>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* IKEv2 */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.3 }}
+              className="card bg-white/10 backdrop-blur-sm border-white/20"
+            >
+              <div className="text-center mb-6">
+                <div className="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <GlobeAltIcon className="h-8 w-8 text-green-400" />
+                </div>
+                <h3 className="text-2xl font-semibold text-white mb-2">IKEv2</h3>
+                <span className="text-sm text-green-400 font-semibold">Ports 500 & 4500</span>
+              </div>
+              <div className="space-y-4">
+                <div className="flex items-start space-x-3">
+                  <CheckCircleIcon className="h-5 w-5 text-green-400 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <h4 className="text-white font-semibold">Auto-Reconnect</h4>
+                    <p className="text-gray-300 text-sm">Instant reconnection when switching networks</p>
+                  </div>
+                </div>
+                <div className="flex items-start space-x-3">
+                  <CheckCircleIcon className="h-5 w-5 text-green-400 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <h4 className="text-white font-semibold">NAT Traversal</h4>
+                    <p className="text-gray-300 text-sm">Works behind restrictive firewalls and NATs</p>
+                  </div>
+                </div>
+                <div className="flex items-start space-x-3">
+                  <CheckCircleIcon className="h-5 w-5 text-green-400 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <h4 className="text-white font-semibold">Enterprise Standard</h4>
+                    <p className="text-gray-300 text-sm">Used by Fortune 500 companies worldwide</p>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+
+          {/* Enterprise Features */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+            className="mt-16 text-center"
+          >
+            <h3 className="text-3xl font-semibold text-white mb-8">Enterprise-Grade Infrastructure</h3>
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div className="text-center">
+                <div className="w-12 h-12 bg-blue-500/20 rounded-full flex items-center justify-center mx-auto mb-3">
+                  <ShieldCheckIcon className="h-6 w-6 text-blue-400" />
+                </div>
+                <h4 className="text-white font-semibold mb-2">Zero-Logs Policy</h4>
+                <p className="text-gray-300 text-sm">Independently audited no-logs policy</p>
+              </div>
+              <div className="text-center">
+                <div className="w-12 h-12 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-3">
+                  <CheckCircleIcon className="h-6 w-6 text-green-400" />
+                </div>
+                <h4 className="text-white font-semibold mb-2">99.9% Uptime</h4>
+                <p className="text-gray-300 text-sm">Redundant infrastructure guarantees reliability</p>
+              </div>
+              <div className="text-center">
+                <div className="w-12 h-12 bg-purple-500/20 rounded-full flex items-center justify-center mx-auto mb-3">
+                  <StarIcon className="h-6 w-6 text-purple-400" />
+                </div>
+                <h4 className="text-white font-semibold mb-2">24/7 Support</h4>
+                <p className="text-gray-300 text-sm">Expert technical support around the clock</p>
+              </div>
+              <div className="text-center">
+                <div className="w-12 h-12 bg-orange-500/20 rounded-full flex items-center justify-center mx-auto mb-3">
+                  <GlobeAltIcon className="h-6 w-6 text-orange-400" />
+                </div>
+                <h4 className="text-white font-semibold mb-2">Global Network</h4>
+                <p className="text-gray-300 text-sm">High-speed servers in 50+ countries</p>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+        {/* Pricing Section */}
+        <section id="pricing" className="px-6 py-20 relative z-10">
         <div className="max-w-7xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -182,13 +425,25 @@ export default function HomePage() {
                 </div>
                 <ul className="text-gray-300 space-y-3 mb-8">
                   <li>✓ Military-grade encryption</li>
+                  <li>✓ 3 VPN protocols (OpenVPN, WireGuard, IKEv2)</li>
                   <li>✓ 50+ global servers</li>
                   <li>✓ No-logs policy</li>
                   <li>✓ 24/7 support</li>
                 </ul>
-                <button className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 px-6 rounded-lg font-semibold transition-colors">
-                  Get Started
-                </button>
+                {!isClerkConfigured ? (
+                  <button 
+                    className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 px-6 rounded-lg font-semibold transition-colors"
+                    onClick={() => alert('Please configure Clerk authentication keys in .env.local')}
+                  >
+                    Get Started
+                  </button>
+                ) : (
+                  <SignUpButton mode="modal">
+                    <button className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 px-6 rounded-lg font-semibold transition-colors">
+                      Get Started
+                    </button>
+                  </SignUpButton>
+                )}
               </div>
             </motion.div>
 
@@ -213,11 +468,23 @@ export default function HomePage() {
                   <li>✓ Everything in Basic</li>
                   <li>✓ Advanced threat protection</li>
                   <li>✓ Dark web monitoring</li>
+                  <li>✓ Enterprise-grade protocols</li>
                   <li>✓ <span className="text-green-400 font-semibold">Sponsor 1 free user</span></li>
                 </ul>
-                <button className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white py-3 px-6 rounded-lg font-semibold transition-all transform hover:scale-105">
-                  Start Sponsoring
-                </button>
+                {!isClerkConfigured ? (
+                  <button 
+                    className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white py-3 px-6 rounded-lg font-semibold transition-all transform hover:scale-105"
+                    onClick={() => alert('Please configure Clerk authentication keys in .env.local')}
+                  >
+                    Start Sponsoring
+                  </button>
+                ) : (
+                  <SignUpButton mode="modal">
+                    <button className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white py-3 px-6 rounded-lg font-semibold transition-all transform hover:scale-105">
+                      Start Sponsoring
+                    </button>
+                  </SignUpButton>
+                )}
               </div>
             </motion.div>
 
@@ -237,11 +504,23 @@ export default function HomePage() {
                   <li>✓ Everything in Premium</li>
                   <li>✓ Dedicated servers</li>
                   <li>✓ Priority support</li>
+                  <li>✓ Custom protocol configuration</li>
                   <li>✓ <span className="text-green-400 font-semibold">Sponsor 5 free users</span></li>
                 </ul>
-                <button className="w-full bg-gray-600 hover:bg-gray-700 text-white py-3 px-6 rounded-lg font-semibold transition-colors">
-                  Contact Sales
-                </button>
+                {!isClerkConfigured ? (
+                  <button 
+                    className="w-full bg-gray-600 hover:bg-gray-700 text-white py-3 px-6 rounded-lg font-semibold transition-colors"
+                    onClick={() => alert('Please configure Clerk authentication keys in .env.local')}
+                  >
+                    Contact Sales
+                  </button>
+                ) : (
+                  <SignUpButton mode="modal">
+                    <button className="w-full bg-gray-600 hover:bg-gray-700 text-white py-3 px-6 rounded-lg font-semibold transition-colors">
+                      Contact Sales
+                    </button>
+                  </SignUpButton>
+                )}
               </div>
             </motion.div>
 
@@ -268,17 +547,28 @@ export default function HomePage() {
                   <li>✓ Monthly impact reports</li>
                   <li>✓ Community recognition</li>
                 </ul>
-                <button className="w-full bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 text-white py-3 px-6 rounded-lg font-semibold transition-all transform hover:scale-105">
-                  Make Impact
-                </button>
+                {!isClerkConfigured ? (
+                  <button 
+                    className="w-full bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 text-white py-3 px-6 rounded-lg font-semibold transition-all transform hover:scale-105"
+                    onClick={() => alert('Please configure Clerk authentication keys in .env.local')}
+                  >
+                    Make Impact
+                  </button>
+                ) : (
+                  <SignUpButton mode="modal">
+                    <button className="w-full bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 text-white py-3 px-6 rounded-lg font-semibold transition-all transform hover:scale-105">
+                      Make Impact
+                    </button>
+                  </SignUpButton>
+                )}
               </div>
             </motion.div>
           </div>
         </div>
       </section>
 
-      {/* Impact Section */}
-      <section id="impact" className="px-6 py-20 bg-gradient-to-r from-blue-900/50 to-purple-900/50">
+        {/* Impact Section */}
+        <section id="impact" className="px-6 py-20 bg-gradient-to-r from-gray-800/50 to-gray-900/50 relative z-10">
         <div className="max-w-7xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -404,14 +694,14 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="px-6 py-20">
+        {/* CTA Section */}
+        <section className="px-6 py-20 relative z-10">
         <div className="max-w-4xl mx-auto text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="bg-gradient-to-r from-blue-600/20 to-purple-600/20 backdrop-blur-sm rounded-2xl p-12 border border-white/20"
+            className="bg-gradient-to-r from-gray-700/20 to-gray-800/20 backdrop-blur-sm rounded-2xl p-12 border border-white/20"
           >
             <h2 className="text-4xl md:text-5xl font-semibold text-white mb-6 leading-tight">
               Ready to Make a Difference?
@@ -420,10 +710,22 @@ export default function HomePage() {
               Join thousands of users fighting for internet freedom. Your subscription helps someone in a censored country access the free internet.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button className="bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 text-white px-8 py-4 rounded-lg text-lg font-semibold transition-all transform hover:scale-105">
-                <HeartIcon className="inline-block mr-2 h-5 w-5" />
-                Start Sponsoring Today
-              </button>
+              {!isClerkConfigured ? (
+                <button 
+                  className="bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 text-white px-8 py-4 rounded-lg text-lg font-semibold transition-all transform hover:scale-105"
+                  onClick={() => alert('Please configure Clerk authentication keys in .env.local')}
+                >
+                  <HeartIcon className="inline-block mr-2 h-5 w-5" />
+                  Start Sponsoring Today
+                </button>
+              ) : (
+                <SignUpButton mode="modal">
+                  <button className="bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 text-white px-8 py-4 rounded-lg text-lg font-semibold transition-all transform hover:scale-105">
+                    <HeartIcon className="inline-block mr-2 h-5 w-5" />
+                    Start Sponsoring Today
+                  </button>
+                </SignUpButton>
+              )}
               <button className="border-2 border-white text-white hover:bg-white hover:text-gray-900 px-8 py-4 rounded-lg text-lg font-semibold transition-all">
                 View Impact Report
               </button>
@@ -432,8 +734,8 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="px-6 py-12 border-t border-white/20">
+        {/* Footer */}
+        <footer className="px-6 py-12 border-t border-white/20 relative z-10">
         <div className="max-w-7xl mx-auto">
           <div className="grid md:grid-cols-4 gap-8">
             <div>
@@ -467,8 +769,8 @@ export default function HomePage() {
             <div>
               <h3 className="text-white font-semibold mb-4">Company</h3>
               <ul className="space-y-2 text-gray-400">
-                <li><a href="#" className="hover:text-white transition-colors">About</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Impact</a></li>
+                <li><a href="/our-why" className="hover:text-white transition-colors">Our Why</a></li>
+                <li><a href="#impact" className="hover:text-white transition-colors">Impact</a></li>
                 <li><a href="#" className="hover:text-white transition-colors">Privacy</a></li>
               </ul>
             </div>
