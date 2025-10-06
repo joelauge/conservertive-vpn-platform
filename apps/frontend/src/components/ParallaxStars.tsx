@@ -1,9 +1,17 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function ParallaxStars() {
+  const [isClient, setIsClient] = useState(false);
+
   useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  useEffect(() => {
+    if (!isClient) return;
+
     const handleScroll = () => {
       const scrolled = window.pageYOffset;
       const stars = document.querySelectorAll('.star');
@@ -33,10 +41,12 @@ export default function ParallaxStars() {
     addRandomTwinkling();
     
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [isClient]);
 
-  // Generate random star positions
+  // Generate random star positions only on client
   const generateStars = (count: number, layer: number) => {
+    if (!isClient) return [];
+    
     const stars = [];
     for (let i = 0; i < count; i++) {
       const top = Math.random() * 4700; // Random vertical position

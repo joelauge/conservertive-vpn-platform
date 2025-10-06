@@ -28,11 +28,13 @@ interface PaymentFormProps {
   planId: string;
   planName: string;
   price: number;
+  additionalSponsorships?: number;
+  selectedApplicants?: string[];
   onSuccess: () => void;
   onError: (error: string) => void;
 }
 
-function PaymentForm({ planId, planName, price, onSuccess, onError }: PaymentFormProps) {
+function PaymentForm({ planId, planName, price, additionalSponsorships = 0, selectedApplicants = [], onSuccess, onError }: PaymentFormProps) {
   const stripe = useStripe();
   const elements = useElements();
   const [isProcessing, setIsProcessing] = useState(false);
@@ -151,9 +153,15 @@ function PaymentForm({ planId, planName, price, onSuccess, onError }: PaymentFor
         <h3 className="text-lg font-semibold text-white mb-4">Order Summary</h3>
         <div className="space-y-3">
           <div className="flex justify-between">
-            <span className="text-gray-300">{planName} Plan</span>
-            <span className="text-white font-semibold">${price}/month</span>
+            <span className="text-gray-300">{planName}</span>
+            <span className="text-white font-semibold">$9.99/month</span>
           </div>
+          {additionalSponsorships > 0 && (
+            <div className="flex justify-between">
+              <span className="text-gray-300">Additional Sponsorships ({additionalSponsorships})</span>
+              <span className="text-white font-semibold">${(additionalSponsorships * 9.99).toFixed(2)}/month</span>
+            </div>
+          )}
           <div className="flex justify-between">
             <span className="text-gray-300">Tax</span>
             <span className="text-white">$0.00</span>
@@ -161,7 +169,7 @@ function PaymentForm({ planId, planName, price, onSuccess, onError }: PaymentFor
           <div className="border-t border-white/20 pt-3">
             <div className="flex justify-between">
               <span className="text-white font-semibold">Total</span>
-              <span className="text-white font-semibold text-xl">${price}/month</span>
+              <span className="text-white font-semibold text-xl">${price.toFixed(2)}/month</span>
             </div>
           </div>
         </div>
@@ -182,11 +190,13 @@ interface StripePaymentProps {
   planId: string;
   planName: string;
   price: number;
+  additionalSponsorships?: number;
+  selectedApplicants?: string[];
   onSuccess: () => void;
   onError: (error: string) => void;
 }
 
-export default function StripePayment({ planId, planName, price, onSuccess, onError }: StripePaymentProps) {
+export default function StripePayment({ planId, planName, price, additionalSponsorships = 0, selectedApplicants = [], onSuccess, onError }: StripePaymentProps) {
   // Check if Stripe is configured
   if (!stripePublishableKey) {
     return (
@@ -229,6 +239,8 @@ export default function StripePayment({ planId, planName, price, onSuccess, onEr
         planId={planId}
         planName={planName}
         price={price}
+        additionalSponsorships={additionalSponsorships}
+        selectedApplicants={selectedApplicants}
         onSuccess={onSuccess}
         onError={onError}
       />

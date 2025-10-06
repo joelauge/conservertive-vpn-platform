@@ -31,6 +31,9 @@ function OnboardingContent() {
   const [currentStep, setCurrentStep] = useState(0);
   const [isSigningUp, setIsSigningUp] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
+  const [additionalSponsorships, setAdditionalSponsorships] = useState(0);
+  const [selectedApplicants, setSelectedApplicants] = useState<string[]>([]);
+  const [availableApplicants, setAvailableApplicants] = useState<any[]>([]);
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
   const [paymentSuccess, setPaymentSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -73,44 +76,8 @@ function OnboardingContent() {
     }
   ];
 
-  const plans = [
-    {
-      id: 'basic',
-      name: 'Basic',
-      price: 9.99,
-      description: 'Essential VPN protection',
-      features: ['Military-grade encryption', '50+ global servers', 'No-logs policy', '24/7 support'],
-      sponsorCount: 0,
-      popular: false
-    },
-    {
-      id: 'premium',
-      name: 'Premium',
-      price: 19.99,
-      description: 'Advanced protection + sponsorship',
-      features: ['Everything in Basic', 'Advanced threat protection', 'Dark web monitoring', 'Sponsor 1 free user'],
-      sponsorCount: 1,
-      popular: true
-    },
-    {
-      id: 'enterprise',
-      name: 'Enterprise',
-      price: 49.99,
-      description: 'Maximum impact',
-      features: ['Everything in Premium', 'Dedicated servers', 'Priority support', 'Sponsor 5 free users'],
-      sponsorCount: 5,
-      popular: false
-    },
-    {
-      id: 'sponsor',
-      name: 'Sponsor',
-      price: 9.99,
-      description: 'Direct sponsorship',
-      features: ['Sponsor 1 free user', 'Impact tracking', 'Monthly reports', 'Community recognition'],
-      sponsorCount: 1,
-      popular: false
-    }
-  ];
+  const basePrice = 9.99;
+  const sponsorshipPrice = 9.99;
 
   useEffect(() => {
     // Handle URL parameters for step navigation
@@ -124,6 +91,25 @@ function OnboardingContent() {
       }
     }
   }, [searchParams]);
+
+  useEffect(() => {
+    // Fetch available applicants when reaching the pricing step
+    if (currentStep === 2) {
+      fetchAvailableApplicants();
+    }
+  }, [currentStep]);
+
+  const fetchAvailableApplicants = async () => {
+    try {
+      const response = await fetch('/api/sponsorship-requests/available/applicants?limit=20');
+      if (response.ok) {
+        const applicants = await response.json();
+        setAvailableApplicants(applicants);
+      }
+    } catch (error) {
+      console.error('Failed to fetch applicants:', error);
+    }
+  };
 
   useEffect(() => {
     // Handle user authentication state
@@ -153,9 +139,56 @@ function OnboardingContent() {
     }
   };
 
-  const handlePlanSelect = (planId: string) => {
-    setSelectedPlan(planId);
-    setTimeout(() => setCurrentStep(3), 500);
+  const handlePlanSelect = () => {
+    setSelectedPlan('base');
+    setError(null);
+  };
+
+  const handleAdditionalSponsorshipsChange = (count: number) => {
+    setAdditionalSponsorships(count);
+    // Clear selected applicants if count is reduced
+    if (count < selectedApplicants.length) {
+      setSelectedApplicants(selectedApplicants.slice(0, count));
+    }
+  };
+
+  const handleApplicantSelect = (applicantId: string, isSelected: boolean) => {
+    if (isSelected) {
+      if (selectedApplicants.length < additionalSponsorships) {
+        setSelectedApplicants([...selectedApplicants, applicantId]);
+      }
+    } else {
+      setSelectedApplicants(selectedApplicants.filter(id => id !== applicantId));
+    }
+  };
+
+  const getTotalPrice = () => {
+    return basePrice + (additionalSponsorships * sponsorshipPrice);
+  };
+
+  const getCountryName = (countryCode: string) => {
+    const countryNames: { [key: string]: string } = {
+      'CN': 'China', 'IR': 'Iran', 'RU': 'Russia', 'CU': 'Cuba', 'KP': 'North Korea',
+      'BY': 'Belarus', 'UZ': 'Uzbekistan', 'TM': 'Turkmenistan', 'VE': 'Venezuela',
+      'ET': 'Ethiopia', 'EG': 'Egypt', 'TR': 'Turkey', 'PK': 'Pakistan', 'BD': 'Bangladesh',
+      'VN': 'Vietnam', 'TH': 'Thailand', 'MY': 'Malaysia', 'ID': 'Indonesia', 'PH': 'Philippines',
+      'MM': 'Myanmar', 'LK': 'Sri Lanka', 'NP': 'Nepal', 'AF': 'Afghanistan', 'IQ': 'Iraq',
+      'SY': 'Syria', 'LB': 'Lebanon', 'JO': 'Jordan', 'SA': 'Saudi Arabia', 'AE': 'UAE',
+      'KW': 'Kuwait', 'QA': 'Qatar', 'BH': 'Bahrain', 'OM': 'Oman', 'YE': 'Yemen'
+    };
+    return countryNames[countryCode] || countryCode;
+  };
+
+  const formatTimeSince = (minutes: number) => {
+    if (minutes < 60) {
+      return `${minutes}m ago`;
+    } else if (minutes < 1440) {
+      const hours = Math.floor(minutes / 60);
+      return `${hours}h ago`;
+    } else {
+      const days = Math.floor(minutes / 1440);
+      return `${days}d ago`;
+    }
   };
 
   const handlePayment = async () => {
@@ -311,68 +344,201 @@ function OnboardingContent() {
                 Choose Your Impact
               </h1>
               <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
-                Every paid subscription sponsors a free user in a censored country. 
-                Your payment fights for internet freedom.
+                Your $9.99 subscription automatically sponsors one person in a censored country. 
+                You can choose who to sponsor or let us pick someone who needs help.
               </p>
             </div>
             
-            <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-              {plans.map((plan, index) => (
-                <motion.div
-                  key={plan.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.1 }}
-                  className={`bg-white/10 backdrop-blur-sm border-white/20 rounded-xl p-6 relative cursor-pointer transition-all duration-300 ${
-                    selectedPlan === plan.id 
-                      ? 'ring-2 ring-blue-400 scale-105' 
-                      : 'hover:scale-105'
-                  } ${plan.popular ? 'border-blue-400/50' : 'border-white/20'}`}
-                  onClick={() => handlePlanSelect(plan.id)}
-                >
-                  {plan.popular && (
-                    <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                      <span className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 py-1 rounded-full text-sm font-semibold">
-                        Most Popular
-                      </span>
-                    </div>
-                  )}
+            <div className="max-w-4xl mx-auto">
+              {/* Base Plan */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-8 mb-8"
+              >
+                <div className="text-center">
+                  <h3 className="text-3xl font-semibold text-white mb-4">ConSERVERtive VPN</h3>
+                  <div className="text-5xl font-bold text-white mb-4">
+                    ${basePrice}<span className="text-xl text-gray-400">/month</span>
+                  </div>
+                  <p className="text-gray-300 mb-6 text-lg">
+                    Essential VPN protection + automatic sponsorship
+                  </p>
                   
-                  <div className="text-center">
-                    <h3 className="text-2xl font-semibold text-white mb-2">{plan.name}</h3>
-                    <div className="text-4xl font-bold text-white mb-2">
-                      ${plan.price}<span className="text-lg text-gray-400">/month</span>
+                  <ul className="text-gray-300 space-y-3 mb-8 text-left max-w-md mx-auto">
+                    <li className="flex items-center">
+                      <CheckCircleIcon className="w-5 h-5 text-green-400 mr-3 flex-shrink-0" />
+                      Military-grade encryption
+                    </li>
+                    <li className="flex items-center">
+                      <CheckCircleIcon className="w-5 h-5 text-green-400 mr-3 flex-shrink-0" />
+                      50+ global servers
+                    </li>
+                    <li className="flex items-center">
+                      <CheckCircleIcon className="w-5 h-5 text-green-400 mr-3 flex-shrink-0" />
+                      No-logs policy
+                    </li>
+                    <li className="flex items-center">
+                      <CheckCircleIcon className="w-5 h-5 text-green-400 mr-3 flex-shrink-0" />
+                      24/7 support
+                    </li>
+                    <li className="flex items-center">
+                      <CheckCircleIcon className="w-5 h-5 text-green-400 mr-3 flex-shrink-0" />
+                      <span className="text-green-400 font-semibold">Sponsor 1 person automatically</span>
+                    </li>
+                  </ul>
+                  
+                  <div className="bg-green-500/30 border border-green-500/50 rounded-lg p-6 mb-8 backdrop-blur-sm">
+                    <div className="flex items-center justify-center text-green-400 mb-4">
+                      <HeartIcon className="w-6 h-6 mr-3" />
+                      <span className="text-lg font-semibold">Your Impact</span>
                     </div>
-                    <p className="text-gray-400 mb-6">{plan.description}</p>
-                    
-                    <ul className="text-gray-300 space-y-3 mb-6 text-left">
-                      {plan.features.map((feature, i) => (
-                        <li key={i} className="flex items-center">
-                          <CheckCircleIcon className="w-5 h-5 text-green-400 mr-3 flex-shrink-0" />
-                          <span className={feature.includes('Sponsor') ? 'text-green-400 font-semibold' : ''}>
-                            {feature}
-                          </span>
-                        </li>
-                      ))}
-                    </ul>
-                    
-                    {plan.sponsorCount > 0 && (
-                      <div className="bg-green-500/30 border border-green-500/50 rounded-lg p-4 mb-6 backdrop-blur-sm">
-                        <div className="flex items-center justify-center text-green-400">
-                          <HeartIcon className="w-5 h-5 mr-2" />
-                          <span className="font-semibold">
-                            You'll sponsor {plan.sponsorCount} free user{plan.sponsorCount > 1 ? 's' : ''}
-                          </span>
-                        </div>
-                      </div>
-                    )}
-                    
-                    <button className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white py-3 px-6 rounded-lg font-semibold transition-all transform hover:scale-105">
-                      Select Plan
+                    <p className="text-gray-300">
+                      Your subscription automatically pays for someone in a censored country to access the free internet. 
+                      You can choose who to sponsor below, or we'll pick someone who needs help.
+                    </p>
+                  </div>
+                  
+                  <button 
+                    onClick={handlePlanSelect}
+                    className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white py-4 px-8 rounded-lg font-semibold transition-all transform hover:scale-105 text-lg"
+                  >
+                    Select Base Plan
+                  </button>
+                </div>
+              </motion.div>
+
+              {/* Additional Sponsorships */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-8 mb-8"
+              >
+                <div className="text-center mb-6">
+                  <h3 className="text-2xl font-semibold text-white mb-4">Add More Sponsorships</h3>
+                  <p className="text-gray-300 mb-6">
+                    Each additional sponsorship costs ${sponsorshipPrice} and helps another person access the free internet.
+                  </p>
+                  
+                  <div className="flex items-center justify-center space-x-4 mb-6">
+                    <button
+                      onClick={() => handleAdditionalSponsorshipsChange(Math.max(0, additionalSponsorships - 1))}
+                      className="w-12 h-12 bg-white/10 hover:bg-white/20 border border-white/20 rounded-lg flex items-center justify-center text-white font-bold text-xl transition-all"
+                    >
+                      -
+                    </button>
+                    <span className="text-3xl font-bold text-white min-w-[3rem] text-center">
+                      {additionalSponsorships}
+                    </span>
+                    <button
+                      onClick={() => handleAdditionalSponsorshipsChange(additionalSponsorships + 1)}
+                      className="w-12 h-12 bg-white/10 hover:bg-white/20 border border-white/20 rounded-lg flex items-center justify-center text-white font-bold text-xl transition-all"
+                    >
+                      +
                     </button>
                   </div>
+                  
+                  {additionalSponsorships > 0 && (
+                    <div className="bg-blue-500/20 border border-blue-500/30 rounded-lg p-4 mb-6">
+                      <p className="text-blue-400 font-semibold">
+                        +{additionalSponsorships} additional sponsorship{additionalSponsorships > 1 ? 's' : ''} = ${(additionalSponsorships * sponsorshipPrice).toFixed(2)}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </motion.div>
+
+              {/* Applicant Selection */}
+              {additionalSponsorships > 0 && (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.4 }}
+                  className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-8"
+                >
+                  <div className="text-center mb-6">
+                    <h3 className="text-2xl font-semibold text-white mb-4">Choose Who to Sponsor</h3>
+                    <p className="text-gray-300 mb-6">
+                      Select specific people to sponsor, or leave it to us to pick those most in need.
+                    </p>
+                  </div>
+                  
+                  <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+                    {availableApplicants.slice(0, 6).map((applicant) => (
+                      <div
+                        key={applicant.id}
+                        className={`bg-white/10 border rounded-lg p-4 cursor-pointer transition-all ${
+                          selectedApplicants.includes(applicant.id)
+                            ? 'border-blue-400 bg-blue-500/20'
+                            : 'border-white/20 hover:border-white/40'
+                        }`}
+                        onClick={() => handleApplicantSelect(applicant.id, !selectedApplicants.includes(applicant.id))}
+                      >
+                        <div className="flex items-center space-x-3 mb-3">
+                          <img
+                            src={applicant.profilePicture || `https://ui-avatars.com/api/?name=${applicant.firstName}+${applicant.lastName}&background=random&color=fff&size=40`}
+                            alt={`${applicant.firstName} ${applicant.lastName}`}
+                            className="w-10 h-10 rounded-full"
+                          />
+                          <div>
+                            <div className="text-white font-semibold">
+                              {applicant.firstName} {applicant.lastName.charAt(0)}.
+                            </div>
+                            <div className="text-gray-400 text-sm">
+                              {getCountryName(applicant.country)}
+                            </div>
+                          </div>
+                        </div>
+                        <div className="text-gray-300 text-sm mb-2">
+                          {formatTimeSince(applicant.minutesSinceApplication)}
+                        </div>
+                        <div className={`text-xs px-2 py-1 rounded-full inline-block ${
+                          applicant.urgency === 'high' ? 'bg-red-500/20 text-red-400' :
+                          applicant.urgency === 'medium' ? 'bg-yellow-500/20 text-yellow-400' :
+                          'bg-green-500/20 text-green-400'
+                        }`}>
+                          {applicant.urgency} priority
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  
+                  {selectedApplicants.length < additionalSponsorships && (
+                    <div className="text-center">
+                      <p className="text-gray-400 mb-4">
+                        You've selected {selectedApplicants.length} of {additionalSponsorships} sponsorships.
+                        We'll pick the remaining {additionalSponsorships - selectedApplicants.length} for you.
+                      </p>
+                    </div>
+                  )}
                 </motion.div>
-              ))}
+              )}
+
+              {/* Total Price */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.6 }}
+                className="bg-gradient-to-r from-blue-600/20 to-purple-600/20 border border-blue-500/30 rounded-xl p-8 mt-8"
+              >
+                <div className="text-center">
+                  <h3 className="text-2xl font-semibold text-white mb-4">Total Monthly Cost</h3>
+                  <div className="text-5xl font-bold text-white mb-4">
+                    ${getTotalPrice().toFixed(2)}<span className="text-xl text-gray-400">/month</span>
+                  </div>
+                  <p className="text-gray-300 mb-6">
+                    Your subscription will sponsor {1 + additionalSponsorships} person{(1 + additionalSponsorships) > 1 ? 's' : ''} in censored countries
+                  </p>
+                  
+                  <button
+                    onClick={() => setTimeout(() => setCurrentStep(3), 500)}
+                    className="w-full bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 text-white py-4 px-8 rounded-lg font-semibold transition-all transform hover:scale-105 text-lg"
+                  >
+                    Continue to Payment
+                  </button>
+                </div>
+              </motion.div>
             </div>
           </motion.div>
         );
@@ -398,16 +564,18 @@ function OnboardingContent() {
             
             <div className="max-w-md mx-auto">
               <StripePayment
-                planId={selectedPlan || 'basic'}
-                planName={plans.find(p => p.id === selectedPlan)?.name || 'Unknown Plan'}
-                price={plans.find(p => p.id === selectedPlan)?.price || 0}
+                planId="base-plan"
+                planName="ConSERVERtive VPN + Sponsorships"
+                price={getTotalPrice()}
+                additionalSponsorships={additionalSponsorships}
+                selectedApplicants={selectedApplicants}
                 onSuccess={() => {
                   setPaymentSuccess(true);
                   setTimeout(() => setCurrentStep(4), 1000);
                 }}
                 onError={(error) => {
                   console.error('Payment error:', error);
-                  // Handle error - could show a toast or error message
+                  setError('Payment failed. Please try again.');
                 }}
               />
             </div>

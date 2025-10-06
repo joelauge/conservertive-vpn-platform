@@ -35,6 +35,7 @@ export default function Header({ className = '' }: HeaderProps) {
           <a href="/#pricing" className="text-gray-300 hover:text-white transition-colors text-base font-medium">Pricing</a>
           <a href="/#impact" className="text-gray-300 hover:text-white transition-colors text-base font-medium">Impact</a>
           <a href="/our-why" className="text-gray-300 hover:text-white transition-colors text-base font-medium">Our Why</a>
+          <a href="/apply-for-account" className="text-gray-300 hover:text-white transition-colors text-base font-medium">Apply for Account</a>
           {!isClerkConfigured ? (
             <button 
               className="btn-primary"

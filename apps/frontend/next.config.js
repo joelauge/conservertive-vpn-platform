@@ -12,25 +12,31 @@ const nextConfig = {
     serverComponentsExternalPackages: ['@heroicons/react'],
   },
   env: {
-    NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL || 'http://34.66.19.167:3001',
+    NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001',
+    NEXT_PUBLIC_BACKEND_URL: process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:3001',
   },
   async rewrites() {
+    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:3001';
     return [
       {
         source: '/api/vpn/:path*',
-        destination: `${process.env.BACKEND_URL || 'http://34.66.19.167:3001'}/api/v1/vpn/:path*`,
+        destination: `${backendUrl}/api/v1/vpn/:path*`,
       },
       {
         source: '/api/billing/:path*',
-        destination: `${process.env.BACKEND_URL || 'http://34.66.19.167:3001'}/api/v1/billing/:path*`,
+        destination: `${backendUrl}/api/v1/billing/:path*`,
+      },
+      {
+        source: '/api/sponsorship-requests/:path*',
+        destination: `${backendUrl}/sponsorship-requests/:path*`,
       },
       {
         source: '/api/health',
-        destination: `${process.env.BACKEND_URL || 'http://34.66.19.167:3001'}/health`,
+        destination: `${backendUrl}/health`,
       },
       {
         source: '/api/status',
-        destination: `${process.env.BACKEND_URL || 'http://34.66.19.167:3001'}/api/v1/status`,
+        destination: `${backendUrl}/api/v1/status`,
       },
     ];
   },
