@@ -8,7 +8,7 @@ set -e
 echo "🚀 Updating ConSERVERtive GCP Backend..."
 
 # Configuration
-GCP_INSTANCE="conservertive-backend"
+GCP_INSTANCE="conservertive-backend-api"
 GCP_ZONE="us-central1-a"
 REPO_PATH="conservertive-vpn-platform"
 
@@ -23,25 +23,44 @@ echo "📡 Connecting to GCP instance..."
 gcloud compute ssh ${GCP_INSTANCE} --zone=${GCP_ZONE} --command="
     set -e
     
-    echo '📥 Pulling latest code from GitHub...'
-    cd ${REPO_PATH}
-    git pull origin main
+    echo '📥 Cloning repository from GitHub...'
+    if [ ! -d ${REPO_PATH} ]; then
+        git clone https://github.com/joelauge/conservertive-vpn-platform.git
+    else
+        echo '📥 Pulling latest code from GitHub...'
+        cd ${REPO_PATH}
+        git pull origin main
+    fi
+    
+    echo '🔄 Checking Node.js version...'
+    if ! command -v node &> /dev/null || ! node --version | grep -q "v18"; then
+        echo '🔄 Installing Node.js 18...'
+        curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+        sudo apt-get install -y nodejs
+    else
+        echo '✅ Node.js 18 already installed'
+    fi
     
     echo '📦 Installing dependencies...'
-    cd apps/backend
+    cd /home/jauge/${REPO_PATH}/apps/backend
     npm install
     
     echo '🔨 Building application...'
     npm run build
     
-    echo '🔄 Restarting backend service...'
-    sudo systemctl restart conservertive-backend
+    echo '🔄 Stopping existing backend...'
+    sudo pkill -f 'node server.js' || true
+    sleep 2
+    
+    echo '🔄 Starting backend service...'
+    cd /home/jauge/${REPO_PATH}/apps/backend
+    nohup node dist/main.prod.js > backend.log 2>&1 &
     
     echo '✅ Backend updated successfully!'
     
     echo '🏥 Checking service health...'
     sleep 5
-    sudo systemctl status conservertive-backend --no-pager
+    ps aux | grep 'node dist/main.prod.js' | grep -v grep
 "
 
 echo ""
