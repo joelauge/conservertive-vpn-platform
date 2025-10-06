@@ -1,0 +1,16 @@
+# Vercel ignore file for frontend-only deployment
+apps/backend/
+apps/mobile/
+apps/infrastructure/
+libs/
+packages/
+scripts/
+*.md
+.env.local
+.env.example
+tsconfig.base.json
+nx.json
+jest.preset.js
+package-lock.json
+dist/
+tmp/
