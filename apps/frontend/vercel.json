@@ -1,12 +1,5 @@
 {
   "version": 2,
-  "name": "conservertive-frontend",
-  "builds": [
-    {
-      "src": "package.json",
-      "use": "@vercel/next"
-    }
-  ],
   "functions": {
     "app/api/**/*.ts": {
       "maxDuration": 30
