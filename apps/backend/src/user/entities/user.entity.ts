@@ -18,8 +18,7 @@ export class User {
   lastName: string;
 
   @Column({
-    type: 'enum',
-    enum: ['user', 'admin', 'sponsor'],
+    type: 'varchar',
     default: 'user',
   })
   role: string;
@@ -34,15 +33,13 @@ export class User {
   sponsorId: string;
 
   @Column({
-    type: 'enum',
-    enum: ['free', 'basic', 'premium', 'enterprise'],
+    type: 'varchar',
     default: 'free',
   })
   subscriptionPlan: string;
 
   @Column({
-    type: 'enum',
-    enum: ['free', 'basic', 'premium', 'enterprise'],
+    type: 'varchar',
     default: 'free',
   })
   subscriptionTier: string;
@@ -63,8 +60,7 @@ export class User {
   stripeSubscriptionId: string;
 
   @Column({
-    type: 'enum',
-    enum: ['active', 'inactive', 'cancelled', 'expired'],
+    type: 'varchar',
     default: 'inactive',
   })
   subscriptionStatus: string;
@@ -104,6 +100,22 @@ export class User {
 
   @Column({ nullable: true })
   passwordResetExpires: Date;
+
+  // VPN Credentials
+  @Column({ nullable: true })
+  vpnUsername: string;
+
+  @Column({ nullable: true })
+  vpnPassword: string;
+
+  @Column({ nullable: true })
+  vpnServerId: string;
+
+  @Column({ nullable: true })
+  vpnConfigGeneratedAt: Date;
+
+  @Column({ nullable: true })
+  vpnConfigExpiresAt: Date;
 
   @CreateDateColumn()
   createdAt: Date;

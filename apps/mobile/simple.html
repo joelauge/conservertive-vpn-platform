@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ConSERVERtive VPN</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: white;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #3b82f6, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .nav {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .nav a {
+            color: #94a3b8;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        
+        .nav a:hover {
+            color: white;
+        }
+        
+        .hero {
+            text-align: center;
+            padding: 80px 0;
+        }
+        
+        .hero h1 {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, #3b82f6, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            color: #94a3b8;
+            margin-bottom: 40px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(45deg, #3b82f6, #8b5cf6);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: scale(1.05);
+        }
+        
+        .btn-secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+        
+        .btn-secondary:hover {
+            background: white;
+            color: #0f172a;
+        }
+        
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            padding: 80px 0;
+        }
+        
+        .feature {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 30px;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+        }
+        
+        .feature h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: #3b82f6;
+        }
+        
+        .feature p {
+            color: #94a3b8;
+            line-height: 1.6;
+        }
+        
+        .status {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 30px;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin: 40px 0;
+            text-align: center;
+        }
+        
+        .status h3 {
+            color: #10b981;
+            margin-bottom: 10px;
+        }
+        
+        .servers {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 40px 0;
+        }
+        
+        .server {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .server:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        .server.selected {
+            border-color: #3b82f6;
+            background: rgba(59, 130, 246, 0.1);
+        }
+        
+        .server-flag {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+        
+        .server-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .server-location {
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+        
+        .protocols {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        
+        .protocol {
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid transparent;
+        }
+        
+        .protocol:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .protocol.selected {
+            background: rgba(59, 130, 246, 0.2);
+            border-color: #3b82f6;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #94a3b8;
+        }
+        
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo">ConSERVERtive VPN</div>
+            <nav class="nav">
+                <a href="#features">Features</a>
+                <a href="#servers">Servers</a>
+                <a href="#status">Status</a>
+            </nav>
+        </header>
+
+        <section class="hero">
+            <h1>Fight for Internet Freedom</h1>
+            <p>ConSERVERtive VPN provides secure, private internet access while combating censorship worldwide. Every paid account sponsors a free user in a censored country.</p>
+            <div class="buttons">
+                <button class="btn btn-primary" onclick="connectVPN()">Connect VPN</button>
+                <button class="btn btn-secondary" onclick="showServers()">View Servers</button>
+            </div>
+        </section>
+
+        <section class="features" id="features">
+            <div class="feature">
+                <h3>🛡️ Military-Grade Encryption</h3>
+                <p>AES-256 encryption protects your data from prying eyes with enterprise-level security.</p>
+            </div>
+            <div class="feature">
+                <h3>🌍 Global Server Network</h3>
+                <p>50+ servers worldwide for optimal speed and reliability across all continents.</p>
+            </div>
+            <div class="feature">
+                <h3>❤️ Fight Censorship</h3>
+                <p>Help users in censored countries access the free internet through our sponsorship program.</p>
+            </div>
+        </section>
+
+        <section class="status" id="status">
+            <h3>Status: Disconnected</h3>
+            <p>Ready to connect and fight for internet freedom</p>
+            <div class="protocols">
+                <div class="protocol selected" onclick="selectProtocol(this, 'OpenVPN')">OpenVPN</div>
+                <div class="protocol" onclick="selectProtocol(this, 'WireGuard')">WireGuard</div>
+                <div class="protocol" onclick="selectProtocol(this, 'IKEv2')">IKEv2</div>
+            </div>
+        </section>
+
+        <section id="servers">
+            <h2 style="text-align: center; margin: 40px 0;">Select Your Server</h2>
+            <div class="servers">
+                <div class="server selected" onclick="selectServer(this, 'US-NY')">
+                    <div class="server-flag">🇺🇸</div>
+                    <div class="server-name">United States</div>
+                    <div class="server-location">New York</div>
+                </div>
+                <div class="server" onclick="selectServer(this, 'UK-LN')">
+                    <div class="server-flag">🇬🇧</div>
+                    <div class="server-name">United Kingdom</div>
+                    <div class="server-location">London</div>
+                </div>
+                <div class="server" onclick="selectServer(this, 'DE-FR')">
+                    <div class="server-flag">🇩🇪</div>
+                    <div class="server-name">Germany</div>
+                    <div class="server-location">Frankfurt</div>
+                </div>
+                <div class="server" onclick="selectServer(this, 'JP-TK')">
+                    <div class="server-flag">🇯🇵</div>
+                    <div class="server-name">Japan</div>
+                    <div class="server-location">Tokyo</div>
+                </div>
+                <div class="server" onclick="selectServer(this, 'CA-TR')">
+                    <div class="server-flag">🇨🇦</div>
+                    <div class="server-name">Canada</div>
+                    <div class="server-location">Toronto</div>
+                </div>
+            </div>
+        </section>
+
+        <footer class="footer">
+            <p>&copy; 2025 ConSERVERtive VPN. All rights reserved.</p>
+            <p>Your subscription sponsors a free user in a censored country</p>
+        </footer>
+    </div>
+
+    <script>
+        let selectedServer = 'US-NY';
+        let selectedProtocol = 'OpenVPN';
+        let isConnected = false;
+
+        function selectServer(element, serverId) {
+            document.querySelectorAll('.server').forEach(s => s.classList.remove('selected'));
+            element.classList.add('selected');
+            selectedServer = serverId;
+            updateStatus();
+        }
+
+        function selectProtocol(element, protocol) {
+            document.querySelectorAll('.protocol').forEach(p => p.classList.remove('selected'));
+            element.classList.add('selected');
+            selectedProtocol = protocol;
+            updateStatus();
+        }
+
+        function connectVPN() {
+            if (isConnected) {
+                disconnectVPN();
+            } else {
+                const statusDiv = document.querySelector('.status');
+                statusDiv.innerHTML = `
+                    <h3>Status: Connecting...</h3>
+                    <p>Establishing secure connection to ${selectedServer} via ${selectedProtocol}</p>
+                `;
+                
+                setTimeout(() => {
+                    isConnected = true;
+                    statusDiv.innerHTML = `
+                        <h3>Status: Connected ✅</h3>
+                        <p>Successfully connected to ${selectedServer} via ${selectedProtocol}</p>
+                        <p>Your IP is now protected and you're fighting censorship!</p>
+                    `;
+                    
+                    document.querySelector('.btn-primary').textContent = 'Disconnect VPN';
+                }, 2000);
+            }
+        }
+
+        function disconnectVPN() {
+            isConnected = false;
+            const statusDiv = document.querySelector('.status');
+            statusDiv.innerHTML = `
+                <h3>Status: Disconnected</h3>
+                <p>Ready to connect and fight for internet freedom</p>
+            `;
+            document.querySelector('.btn-primary').textContent = 'Connect VPN';
+        }
+
+        function showServers() {
+            document.getElementById('servers').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function updateStatus() {
+            if (!isConnected) {
+                const statusDiv = document.querySelector('.status');
+                statusDiv.innerHTML = `
+                    <h3>Status: Ready</h3>
+                    <p>Selected: ${selectedServer} via ${selectedProtocol}</p>
+                `;
+            }
+        }
+
+        // Initialize
+        updateStatus();
+    </script>
+</body>
+</html>
+
+
+
+
+

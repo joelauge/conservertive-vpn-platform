@@ -1,21 +1,21 @@
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import helmet from 'helmet';
-import compression from 'compression';
-import rateLimit from 'express-rate-limit';
+import * as helmet from 'helmet';
+import * as compression from 'compression';
+import * as rateLimit from 'express-rate-limit';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   // Security middleware
-  app.use(helmet());
-  app.use(compression());
+  app.use(helmet.default());
+  app.use(compression.default());
   
   // Rate limiting
   app.use(
-    rateLimit({
+    rateLimit.default({
       windowMs: 15 * 60 * 1000, // 15 minutes
       max: 100, // limit each IP to 100 requests per windowMs
       message: 'Too many requests from this IP, please try again later.',

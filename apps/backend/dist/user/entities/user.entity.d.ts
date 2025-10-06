@@ -1,0 +1,36 @@
+export declare class User {
+    id: string;
+    email: string;
+    password: string;
+    firstName: string;
+    lastName: string;
+    role: string;
+    country: string;
+    isSponsored: boolean;
+    sponsorId: string;
+    subscriptionPlan: string;
+    subscriptionTier: string;
+    sponsorshipEnabled: boolean;
+    sponsorshipCount: number;
+    maxSponsorships: number;
+    stripeCustomerId: string;
+    stripeSubscriptionId: string;
+    subscriptionStatus: string;
+    lastLoginAt: Date;
+    ipAddress: string;
+    userAgent: string;
+    isActive: boolean;
+    profilePicture: string;
+    bio: string;
+    website: string;
+    twitterHandle: string;
+    emailVerified: boolean;
+    emailVerificationToken: string;
+    passwordResetToken: string;
+    passwordResetExpires: Date;
+    createdAt: Date;
+    updatedAt: Date;
+    sponsorships: any[];
+    sponsoredBy: any[];
+    sponsorshipRequests: any[];
+}

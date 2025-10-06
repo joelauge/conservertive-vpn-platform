@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  minimal-vpn:
+    build:
+      context: .
+      dockerfile: Dockerfile.minimal
+    container_name: conservertive-minimal-vpn
+    ports:
+      - "1194:1194/udp"
+      - "8080:8080"
+    volumes:
+      - vpn-data:/etc/openvpn
+    restart: unless-stopped
+    environment:
+      - VPN_SERVER_NAME=ConSERVERtive-Minimal
+    networks:
+      - vpn-network
+
+volumes:
+  vpn-data:
+
+networks:
+  vpn-network:
+    driver: bridge
+
+

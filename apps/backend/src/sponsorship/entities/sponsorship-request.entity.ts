@@ -16,8 +16,7 @@ export class SponsorshipRequest {
   reason: string;
 
   @Column({
-    type: 'enum',
-    enum: ['low', 'medium', 'high'],
+    type: 'varchar',
     default: 'medium',
   })
   urgency: 'low' | 'medium' | 'high';
@@ -29,8 +28,7 @@ export class SponsorshipRequest {
   userAgent: string;
 
   @Column({
-    type: 'enum',
-    enum: ['pending', 'matched', 'expired', 'cancelled'],
+    type: 'varchar',
     default: 'pending',
   })
   status: 'pending' | 'matched' | 'expired' | 'cancelled';

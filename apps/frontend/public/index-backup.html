@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ConSERVERtive VPN - Combatting Censorship Worldwide</title>
+    <meta name="description" content="ConSERVERtive VPN provides secure, private internet access while fighting censorship globally. Pay for one account, sponsor a free user in a censored country.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .text-gradient {
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        /* Animation classes */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.8s ease-out;
+        }
+        
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .slide-up {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease-out;
+        }
+        
+        .slide-up.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .scale-in {
+            opacity: 0;
+            transform: scale(0.9);
+            transition: all 0.5s ease-out;
+        }
+        
+        .scale-in.visible {
+            opacity: 1;
+            transform: scale(1);
+        }
+        
+        .stagger-1 { transition-delay: 0.1s; }
+        .stagger-2 { transition-delay: 0.2s; }
+        .stagger-3 { transition-delay: 0.3s; }
+        .stagger-4 { transition-delay: 0.4s; }
+        .stagger-5 { transition-delay: 0.5s; }
+        
+        /* Hover animations */
+        .hover-lift {
+            transition: transform 0.3s ease;
+        }
+        
+        .hover-lift:hover {
+            transform: translateY(-5px);
+        }
+        
+        .hover-scale {
+            transition: transform 0.3s ease;
+        }
+        
+        .hover-scale:hover {
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900">
+    <!-- Navigation -->
+    <nav class="relative px-6 py-4">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <div class="flex items-center">
+                <img 
+                    src="/conservertive_logo_light_500px.png" 
+                    alt="ConSERVERtive VPN" 
+                    class="h-10 w-auto"
+                />
+            </div>
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="#features" class="text-gray-300 hover:text-white transition-colors text-base font-medium">Features</a>
+                <a href="#pricing" class="text-gray-300 hover:text-white transition-colors text-base font-medium">Pricing</a>
+                <a href="#impact" class="text-gray-300 hover:text-white transition-colors text-base font-medium">Impact</a>
+                <button class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-semibold transition-colors">
+                    Get Started
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative px-6 py-20">
+        <div class="max-w-7xl mx-auto text-center">
+            <div class="fade-in">
+                <h1 class="text-5xl md:text-7xl font-semibold text-white mb-6 leading-tight">
+                    Fight for
+                    <span class="text-gradient font-light">
+                        Internet Freedom
+                    </span>
+                </h1>
+                <p class="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto font-light leading-relaxed">
+                    ConSERVERtive VPN provides secure, private internet access while combating censorship worldwide. 
+                    Every paid account sponsors a free user in a censored country.
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <button class="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-4 rounded-lg text-lg font-semibold transition-all transform hover:scale-105 hover-scale">
+                        Start Free Trial
+                        <span class="inline-block ml-2">→</span>
+                    </button>
+                    <button class="border-2 border-white text-white hover:bg-white hover:text-gray-900 px-8 py-4 rounded-lg text-lg font-semibold transition-all hover-scale">
+                        Learn More
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="px-6 py-20">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl md:text-5xl font-semibold text-white mb-6 leading-tight slide-up">
+                    Why Choose ConSERVERtive?
+                </h2>
+                <p class="text-xl text-gray-300 max-w-2xl mx-auto font-light leading-relaxed slide-up stagger-1">
+                    More than just a VPN - we're a movement fighting for internet freedom worldwide.
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="bg-white/10 backdrop-blur-sm border-white/20 rounded-xl p-8 hover-lift slide-up stagger-1">
+                    <div class="w-12 h-12 bg-blue-500 rounded-lg flex items-center justify-center mb-6">
+                        <span class="text-white text-xl">🛡️</span>
+                    </div>
+                    <h3 class="text-2xl font-semibold text-white mb-4">Military-Grade Encryption</h3>
+                    <p class="text-gray-300 leading-relaxed">
+                        AES-256 encryption protects your data from prying eyes
+                    </p>
+                </div>
+
+                <div class="bg-white/10 backdrop-blur-sm border-white/20 rounded-xl p-8 hover-lift slide-up stagger-2">
+                    <div class="w-12 h-12 bg-green-500 rounded-lg flex items-center justify-center mb-6">
+                        <span class="text-white text-xl">🌍</span>
+                    </div>
+                    <h3 class="text-2xl font-semibold text-white mb-4">Global Impact</h3>
+                    <p class="text-gray-300 leading-relaxed">
+                        Every subscription sponsors a free user in a censored country, fighting for internet freedom.
+                    </p>
+                </div>
+
+                <div class="bg-white/10 backdrop-blur-sm border-white/20 rounded-xl p-8 hover-lift slide-up stagger-3">
+                    <div class="w-12 h-12 bg-purple-500 rounded-lg flex items-center justify-center mb-6">
+                        <span class="text-white text-xl">⚡</span>
+                    </div>
+                    <h3 class="text-2xl font-semibold text-white mb-4">Lightning Fast</h3>
+                    <p class="text-gray-300 leading-relaxed">
+                        Optimized servers worldwide ensure fast, reliable connections for all your needs.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section id="pricing" class="px-6 py-20">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl md:text-5xl font-semibold text-white mb-6 leading-tight slide-up">
+                    Choose Your Plan
+                </h2>
+                <p class="text-xl text-gray-300 max-w-2xl mx-auto font-light leading-relaxed slide-up stagger-1">
+                    Every paid subscription sponsors a free user in a censored country. Your payment fights for internet freedom.
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Basic Plan -->
+                <div class="bg-white/10 backdrop-blur-sm border-white/20 rounded-xl p-8 relative hover-lift scale-in stagger-1">
+                    <div class="text-center">
+                        <h3 class="text-2xl font-semibold text-white mb-2">Basic</h3>
+                        <div class="text-4xl font-bold text-white mb-4">
+                            $9.99<span class="text-lg text-gray-400">/month</span>
+                        </div>
+                        <ul class="text-gray-300 space-y-3 mb-8">
+                            <li>✓ Military-grade encryption</li>
+                            <li>✓ 50+ global servers</li>
+                            <li>✓ No-logs policy</li>
+                            <li>✓ 24/7 support</li>
+                        </ul>
+                        <button class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 px-6 rounded-lg font-semibold transition-colors">
+                            Get Started
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Premium Plan -->
+                <div class="bg-transparent backdrop-blur-sm border-blue-400/50 rounded-xl p-8 relative hover-lift scale-in stagger-2">
+                    <div class="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                        <span class="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 py-1 rounded-full text-sm font-semibold">
+                            Most Popular
+                        </span>
+                    </div>
+                    <div class="text-center">
+                        <h3 class="text-2xl font-semibold text-white mb-2">Premium</h3>
+                        <div class="text-4xl font-bold text-white mb-4">
+                            $19.99<span class="text-lg text-gray-300">/month</span>
+                        </div>
+                        <ul class="text-gray-200 space-y-3 mb-8">
+                            <li>✓ Everything in Basic</li>
+                            <li>✓ Advanced threat protection</li>
+                            <li>✓ Dark web monitoring</li>
+                            <li>✓ <span class="text-green-400 font-semibold">Sponsor 1 free user</span></li>
+                        </ul>
+                        <button class="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white py-3 px-6 rounded-lg font-semibold transition-all transform hover:scale-105">
+                            Start Sponsoring
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Enterprise Plan -->
+                <div class="bg-white/10 backdrop-blur-sm border-white/20 rounded-xl p-8 relative hover-lift scale-in stagger-3">
+                    <div class="text-center">
+                        <h3 class="text-2xl font-semibold text-white mb-2">Enterprise</h3>
+                        <div class="text-4xl font-bold text-white mb-4">
+                            $49.99<span class="text-lg text-gray-400">/month</span>
+                        </div>
+                        <ul class="text-gray-300 space-y-3 mb-8">
+                            <li>✓ Everything in Premium</li>
+                            <li>✓ Dedicated servers</li>
+                            <li>✓ Priority support</li>
+                            <li>✓ <span class="text-green-400 font-semibold">Sponsor 5 free users</span></li>
+                        </ul>
+                        <button class="w-full bg-gray-600 hover:bg-gray-700 text-white py-3 px-6 rounded-lg font-semibold transition-colors">
+                            Contact Sales
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Direct Sponsorship -->
+                <div class="bg-transparent backdrop-blur-sm border-green-400/50 rounded-xl p-8 relative hover-lift scale-in stagger-4">
+                    <div class="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                        <span class="bg-gradient-to-r from-green-600 to-blue-600 text-white px-4 py-1 rounded-full text-sm font-semibold">
+                            Direct Impact
+                        </span>
+                    </div>
+                    <div class="text-center">
+                        <h3 class="text-2xl font-semibold text-white mb-2">Sponsor</h3>
+                        <div class="text-4xl font-bold text-white mb-4">
+                            $9.99<span class="text-lg text-gray-300">/month</span>
+                        </div>
+                        <ul class="text-gray-200 space-y-3 mb-8">
+                            <li>✓ <span class="text-green-400 font-semibold">Sponsor 1 free user</span></li>
+                            <li>✓ Direct impact tracking</li>
+                            <li>✓ Monthly impact reports</li>
+                            <li>✓ Community recognition</li>
+                        </ul>
+                        <button class="w-full bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 text-white py-3 px-6 rounded-lg font-semibold transition-all transform hover:scale-105">
+                            Make Impact
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Impact Section -->
+    <section id="impact" class="px-6 py-20 bg-gradient-to-r from-blue-900/50 to-purple-900/50">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl md:text-5xl font-semibold text-white mb-6 leading-tight slide-up">
+                    Our Impact
+                </h2>
+                <p class="text-xl text-gray-300 max-w-2xl mx-auto font-light leading-relaxed slide-up stagger-1">
+                    See how ConSERVERtive VPN is making a real difference in the fight for internet freedom.
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+                <!-- Impact Stats -->
+                <div class="text-center slide-up stagger-1">
+                    <div class="text-5xl font-bold text-green-400 mb-4">1,247</div>
+                    <div class="text-xl text-white font-semibold mb-2">Users Sponsored</div>
+                    <div class="text-gray-300">Free VPN access provided to users in censored countries</div>
+                </div>
+
+                <div class="text-center slide-up stagger-2">
+                    <div class="text-5xl font-bold text-blue-400 mb-4">47</div>
+                    <div class="text-xl text-white font-semibold mb-2">Countries Reached</div>
+                    <div class="text-gray-300">Censored countries where we've provided free access</div>
+                </div>
+
+                <div class="text-center slide-up stagger-3">
+                    <div class="text-5xl font-bold text-purple-400 mb-4">98.7%</div>
+                    <div class="text-xl text-white font-semibold mb-2">Success Rate</div>
+                    <div class="text-gray-300">Successful censorship bypass rate</div>
+                </div>
+            </div>
+
+            <!-- Success Stories -->
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="bg-white/10 backdrop-blur-sm border-white/20 rounded-xl p-8 hover-lift slide-up stagger-4">
+                    <div class="flex items-start space-x-4">
+                        <img 
+                            src="/ahmed-avatar.png" 
+                            alt="Ahmed from Iran" 
+                            class="w-12 h-12 rounded-full"
+                        />
+                        <div>
+                            <h3 class="text-xl font-semibold text-white mb-2">Ahmed from Iran</h3>
+                            <p class="text-gray-300 leading-relaxed">
+                                "Thanks to ConSERVERtive VPN, I can access educational resources from around the world. 
+                                That someone in some other country would do this for me is amazing. The sponsorship program gave me hope when I had none."
+                            </p>
+                            <div class="text-green-400 text-sm mt-2">Sponsored by Premium user</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white/10 backdrop-blur-sm border-white/20 rounded-xl p-8 hover-lift slide-up stagger-5">
+                    <div class="flex items-start space-x-4">
+                        <img 
+                            src="/maria-avatar.png" 
+                            alt="Maria from Venezuela" 
+                            class="w-12 h-12 rounded-full"
+                        />
+                        <div>
+                            <h3 class="text-xl font-semibold text-white mb-2">Maria from Venezuela</h3>
+                            <p class="text-gray-300 leading-relaxed">
+                                "I can now access news from around the world and communicate with my family abroad. 
+                                ConSERVERtive VPN's sponsorship program changed my life."
+                            </p>
+                            <div class="text-green-400 text-sm mt-2">Sponsored by Direct sponsor</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Call to Action -->
+            <div class="text-center mt-16">
+                <h3 class="text-3xl font-semibold text-white mb-4">
+                    Be Part of the Solution
+                </h3>
+                <p class="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
+                    Every subscription directly sponsors a user in a censored country. Your payment becomes their freedom.
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <button class="bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 text-white px-8 py-4 rounded-lg text-lg font-semibold transition-all transform hover:scale-105">
+                        Start Sponsoring Today
+                    </button>
+                    <button class="border-2 border-white text-white hover:bg-white hover:text-gray-900 px-8 py-4 rounded-lg text-lg font-semibold transition-all">
+                        View Impact Report
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="px-6 py-12 border-t border-white/20 fade-in">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex flex-col md:flex-row items-center justify-between">
+                <div class="flex items-center space-x-3 mb-4 md:mb-0">
+                    <img 
+                        src="/conservertive_logo_light_500px.png" 
+                        alt="ConSERVERtive VPN" 
+                        class="h-8"
+                    />
+                </div>
+                <div class="text-gray-400 text-sm">
+                    &copy; 2025 ConSERVERtive VPN. All rights reserved.
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,30 @@
+FROM alpine:3.18
+
+# Install only essential packages
+RUN apk add --no-cache \
+    openvpn \
+    iptables \
+    curl \
+    bash
+
+# Create minimal directories
+RUN mkdir -p /etc/openvpn/server
+
+# Copy minimal OpenVPN configuration
+COPY openvpn-server.conf /etc/openvpn/server/
+COPY start-minimal-vpn.sh /usr/local/bin/
+
+# Make script executable
+RUN chmod +x /usr/local/bin/start-minimal-vpn.sh
+
+# Expose OpenVPN port
+EXPOSE 1194/udp
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
+    CMD curl -f http://localhost:8080/health || exit 1
+
+# Start minimal VPN server
+CMD ["/usr/local/bin/start-minimal-vpn.sh"]
+
+

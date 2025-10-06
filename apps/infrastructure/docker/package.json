@@ -1,25 +1,17 @@
 {
-  "name": "conservertive-vpn-api",
+  "name": "conservertive-vpn-server",
   "version": "1.0.0",
-  "description": "ConSERVERtive VPN Management API",
-  "main": "vpn-api.js",
+  "description": "ConSERVERtive VPN Server - Docker-based VPN with OpenVPN, WireGuard, and IKEv2",
+  "main": "simple-vpn-server.js",
   "scripts": {
-    "start": "node vpn-api.js",
-    "dev": "nodemon vpn-api.js"
+    "start": "node simple-vpn-server.js",
+    "dev": "node simple-vpn-server.js"
   },
   "dependencies": {
-    "express": "^4.18.2"
+    "express": "^4.18.2",
+    "pm2": "^5.3.0"
   },
-  "devDependencies": {
-    "nodemon": "^3.0.1"
-  },
-  "keywords": [
-    "vpn",
-    "openvpn",
-    "wireguard",
-    "ikev2",
-    "conservertive"
-  ],
-  "author": "ConSERVERtive Team",
-  "license": "MIT"
+  "engines": {
+    "node": ">=18.0.0"
+  }
 }

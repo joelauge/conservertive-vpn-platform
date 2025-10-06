@@ -1,21 +1,26 @@
 {
-  "version": 2,
-  "builds": [
+  "buildCommand": "cd apps/frontend && npm run build",
+  "outputDirectory": "apps/frontend/.next",
+  "framework": "nextjs",
+  "installCommand": "cd apps/frontend && npm install",
+  "devCommand": "cd apps/frontend && npm run dev",
+  "headers": [
     {
-      "src": "apps/frontend/package.json",
-      "use": "@vercel/next",
-      "config": {
-        "distDir": ".next"
-      }
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "X-XSS-Protection",
+          "value": "1; mode=block"
+        }
+      ]
     }
-  ],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "apps/frontend/$1"
-    }
-  ],
-  "installCommand": "npm install",
-  "buildCommand": "npm run build:frontend",
-  "outputDirectory": "apps/frontend/.next"
+  ]
 }

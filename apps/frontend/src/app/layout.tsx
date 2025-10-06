@@ -1,8 +1,9 @@
 import type { Metadata } from 'next';
 import { Sora, Source_Code_Pro } from 'next/font/google';
+import { ClerkProvider } from '@clerk/nextjs';
 import './globals.css';
 
-const sora = Sora({ 
+const sora = Sora({
   subsets: ['latin'],
   weight: ['300', '400', '600'],
   variable: '--font-sora',
@@ -21,7 +22,6 @@ export const metadata: Metadata = {
   description: 'ConSERVERtive VPN provides secure, private internet access while fighting censorship globally. Pay for one account, sponsor a free user in a censored country.',
   keywords: 'VPN, censorship, internet freedom, privacy, security, anti-censorship',
   authors: [{ name: 'ConSERVERtive Team' }],
-  viewport: 'width=device-width, initial-scale=1',
   robots: 'index, follow',
   openGraph: {
     title: 'ConSERVERtive VPN - Combatting Censorship Worldwide',
@@ -36,14 +36,23 @@ export const metadata: Metadata = {
   },
 };
 
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+};
+
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className={`${sora.variable} ${sourceCodePro.variable} font-sans`}>{children}</body>
-    </html>
+    <ClerkProvider>
+      <html lang="en">
+        <body className={`${sora.variable} ${sourceCodePro.variable} font-sans`}>
+          {children}
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }

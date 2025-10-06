@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ConSERVERtive VPN - Test</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: white;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            text-align: center;
+            max-width: 600px;
+            padding: 40px;
+        }
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #3b82f6, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .subtitle {
+            font-size: 1.2rem;
+            color: #94a3b8;
+            margin-bottom: 2rem;
+        }
+        .button {
+            background: linear-gradient(45deg, #3b82f6, #8b5cf6);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+            margin: 10px;
+        }
+        .button:hover {
+            transform: scale(1.05);
+        }
+        .status {
+            margin-top: 2rem;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>ConSERVERtive VPN</h1>
+        <p class="subtitle">Fighting Internet Censorship Worldwide</p>
+        
+        <button class="button" onclick="testConnection()">Test VPN Connection</button>
+        <button class="button" onclick="showServers()">View Servers</button>
+        
+        <div class="status" id="status">
+            <h3>Status: Ready</h3>
+            <p>Your subscription sponsors a free user in a censored country</p>
+        </div>
+    </div>
+
+    <script>
+        function testConnection() {
+            document.getElementById('status').innerHTML = `
+                <h3>Status: Connecting...</h3>
+                <p>Establishing secure connection to VPN server...</p>
+            `;
+            
+            setTimeout(() => {
+                document.getElementById('status').innerHTML = `
+                    <h3>Status: Connected ✅</h3>
+                    <p>Successfully connected to ConSERVERtive VPN</p>
+                    <p>Your IP is now protected and you're fighting censorship!</p>
+                `;
+            }, 2000);
+        }
+        
+        function showServers() {
+            document.getElementById('status').innerHTML = `
+                <h3>Available Servers:</h3>
+                <ul style="text-align: left; max-width: 300px; margin: 0 auto;">
+                    <li>🇺🇸 United States - New York</li>
+                    <li>🇬🇧 United Kingdom - London</li>
+                    <li>🇩🇪 Germany - Frankfurt</li>
+                    <li>🇯🇵 Japan - Tokyo</li>
+                    <li>🇨🇦 Canada - Toronto</li>
+                </ul>
+                <p><strong>Protocols:</strong> OpenVPN, WireGuard, IKEv2</p>
+            `;
+        }
+    </script>
+</body>
+</html>
+
+
+
+
+

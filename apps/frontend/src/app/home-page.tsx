@@ -11,6 +11,8 @@ import {
   StarIcon
 } from '@heroicons/react/24/outline';
 import ParallaxStars from '../components/ParallaxStars';
+import Header from '../components/Header';
+import Footer from '../components/Footer';
 import { useUser, SignInButton, SignUpButton } from '@clerk/nextjs';
 
 export default function HomePage() {
@@ -50,42 +52,8 @@ export default function HomePage() {
     <div className="min-h-screen relative">
       <ParallaxStars />
       
-      {/* Navigation */}
-      <nav className="relative px-6 py-4 z-10">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center">
-            <img 
-              src="/conservertive_logo_light_500px.png" 
-              alt="ConSERVERtive VPN" 
-              className="h-10 w-auto"
-            />
-          </div>
-          <div className="hidden md:flex items-center space-x-8">
-            <a href="#features" className="text-gray-300 hover:text-white transition-colors text-base font-medium">Features</a>
-            <a href="#pricing" className="text-gray-300 hover:text-white transition-colors text-base font-medium">Pricing</a>
-            <a href="#impact" className="text-gray-300 hover:text-white transition-colors text-base font-medium">Impact</a>
-            <a href="/our-why" className="text-gray-300 hover:text-white transition-colors text-base font-medium">Our Why</a>
-            {!isClerkConfigured ? (
-              <button 
-                className="btn-primary"
-                onClick={() => alert('Please configure Clerk authentication keys in .env.local')}
-              >
-                Get Started
-              </button>
-            ) : isLoaded && user ? (
-              <a href="/dashboard" className="btn-primary">
-                Dashboard
-              </a>
-            ) : (
-              <SignUpButton mode="modal">
-                <button className="btn-primary">
-                  Get Started
-                </button>
-              </SignUpButton>
-            )}
-          </div>
-        </div>
-      </nav>
+      {/* Header */}
+      <Header />
 
       {/* Hero Section */}
       <section className="relative px-6 py-20 z-10">
@@ -438,11 +406,9 @@ export default function HomePage() {
                     Get Started
                   </button>
                 ) : (
-                  <SignUpButton mode="modal">
-                    <button className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 px-6 rounded-lg font-semibold transition-colors">
-                      Get Started
-                    </button>
-                  </SignUpButton>
+                  <a href="/onboarding" className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 px-6 rounded-lg font-semibold transition-colors block text-center">
+                    Get Started
+                  </a>
                 )}
               </div>
             </motion.div>
@@ -734,52 +700,8 @@ export default function HomePage() {
         </div>
       </section>
 
-        {/* Footer */}
-        <footer className="px-6 py-12 border-t border-white/20 relative z-10">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid md:grid-cols-4 gap-8">
-            <div>
-              <div className="flex items-center mb-4">
-                <img 
-                  src="/conservertive_logo_light_500px.png" 
-                  alt="ConSERVERtive VPN" 
-                  className="h-8 w-auto"
-                />
-              </div>
-              <p className="text-gray-400">
-                Fighting for internet freedom worldwide.
-              </p>
-            </div>
-            <div>
-              <h3 className="text-white font-semibold mb-4">Product</h3>
-              <ul className="space-y-2 text-gray-400">
-                <li><a href="#" className="hover:text-white transition-colors">Features</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Pricing</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Download</a></li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="text-white font-semibold mb-4">Support</h3>
-              <ul className="space-y-2 text-gray-400">
-                <li><a href="#" className="hover:text-white transition-colors">Help Center</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Contact Us</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Status</a></li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="text-white font-semibold mb-4">Company</h3>
-              <ul className="space-y-2 text-gray-400">
-                <li><a href="/our-why" className="hover:text-white transition-colors">Our Why</a></li>
-                <li><a href="#impact" className="hover:text-white transition-colors">Impact</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Privacy</a></li>
-              </ul>
-            </div>
-          </div>
-          <div className="border-t border-white/20 mt-8 pt-8 text-center text-gray-400">
-            <p>&copy; 2025 ConSERVERtive VPN. All rights reserved.</p>
-          </div>
-        </div>
-      </footer>
+      {/* Footer */}
+      <Footer />
     </div>
   );
 }

@@ -11,17 +11,22 @@ export class StripeService {
     const stripeSecretKey = this.configService.get<string>('STRIPE_SECRET_KEY');
     
     if (!stripeSecretKey) {
-      throw new Error('STRIPE_SECRET_KEY is not configured');
+      this.logger.warn('STRIPE_SECRET_KEY is not configured - Stripe features will be disabled');
+      return;
     }
 
     this.stripe = new Stripe(stripeSecretKey, {
-      apiVersion: '2025-08-27.basil',
+      apiVersion: '2023-10-16',
     });
 
     this.logger.log('Stripe service initialized');
   }
 
   async createCustomer(email: string, name: string, metadata?: Record<string, string>) {
+    if (!this.stripe) {
+      throw new Error('Stripe is not configured');
+    }
+    
     try {
       const customer = await this.stripe.customers.create({
         email,
@@ -41,6 +46,10 @@ export class StripeService {
   }
 
   async createProduct(name: string, description: string) {
+    if (!this.stripe) {
+      throw new Error('Stripe is not configured');
+    }
+    
     try {
       const product = await this.stripe.products.create({
         name,
@@ -59,6 +68,10 @@ export class StripeService {
   }
 
   async createPrice(productId: string, unitAmount: number, currency: string = 'usd', interval?: 'month' | 'year') {
+    if (!this.stripe) {
+      throw new Error('Stripe is not configured');
+    }
+    
     try {
       const priceData: Stripe.PriceCreateParams = {
         product: productId,
@@ -84,6 +97,10 @@ export class StripeService {
   }
 
   async createSubscription(customerId: string, priceId: string, metadata?: Record<string, string>) {
+    if (!this.stripe) {
+      throw new Error('Stripe is not configured');
+    }
+    
     try {
       const subscription = await this.stripe.subscriptions.create({
         customer: customerId,
@@ -104,6 +121,10 @@ export class StripeService {
   }
 
   async createPaymentLink(priceId: string, quantity: number = 1, redirectUrl?: string) {
+    if (!this.stripe) {
+      throw new Error('Stripe is not configured');
+    }
+    
     try {
       const paymentLink = await this.stripe.paymentLinks.create({
         line_items: [
@@ -127,6 +148,10 @@ export class StripeService {
   }
 
   async createInvoice(customerId: string, daysUntilDue: number = 30) {
+    if (!this.stripe) {
+      throw new Error('Stripe is not configured');
+    }
+    
     try {
       const invoice = await this.stripe.invoices.create({
         customer: customerId,
@@ -145,6 +170,10 @@ export class StripeService {
   }
 
   async createInvoiceItem(customerId: string, priceId: string, invoiceId: string) {
+    if (!this.stripe) {
+      throw new Error('Stripe is not configured');
+    }
+    
     try {
       const invoiceItem = await this.stripe.invoiceItems.create({
         customer: customerId,
@@ -163,6 +192,10 @@ export class StripeService {
   }
 
   async finalizeInvoice(invoiceId: string) {
+    if (!this.stripe) {
+      throw new Error('Stripe is not configured');
+    }
+    
     try {
       const invoice = await this.stripe.invoices.finalizeInvoice(invoiceId);
       this.logger.log(`Finalized Stripe invoice: ${invoice.id}`);
@@ -174,6 +207,10 @@ export class StripeService {
   }
 
   async createRefund(paymentIntentId: string, amount?: number, reason?: 'duplicate' | 'fraudulent' | 'requested_by_customer') {
+    if (!this.stripe) {
+      throw new Error('Stripe is not configured');
+    }
+    
     try {
       const refund = await this.stripe.refunds.create({
         payment_intent: paymentIntentId,
@@ -190,6 +227,10 @@ export class StripeService {
   }
 
   async getBalance() {
+    if (!this.stripe) {
+      throw new Error('Stripe is not configured');
+    }
+    
     try {
       const balance = await this.stripe.balance.retrieve();
       this.logger.log('Retrieved Stripe balance');
@@ -201,6 +242,10 @@ export class StripeService {
   }
 
   async listCustomers(limit: number = 10, email?: string) {
+    if (!this.stripe) {
+      throw new Error('Stripe is not configured');
+    }
+    
     try {
       const params: Stripe.CustomerListParams = {
         limit,
@@ -217,6 +262,10 @@ export class StripeService {
   }
 
   async listProducts(limit: number = 10) {
+    if (!this.stripe) {
+      throw new Error('Stripe is not configured');
+    }
+    
     try {
       const products = await this.stripe.products.list({ limit });
       this.logger.log(`Retrieved ${products.data.length} Stripe products`);
@@ -228,6 +277,10 @@ export class StripeService {
   }
 
   async listPrices(productId?: string, limit: number = 10) {
+    if (!this.stripe) {
+      throw new Error('Stripe is not configured');
+    }
+    
     try {
       const params: Stripe.PriceListParams = {
         limit,
@@ -244,6 +297,10 @@ export class StripeService {
   }
 
   async listPaymentIntents(customerId?: string, limit: number = 10) {
+    if (!this.stripe) {
+      throw new Error('Stripe is not configured');
+    }
+    
     try {
       const params: Stripe.PaymentIntentListParams = {
         limit,
@@ -260,6 +317,10 @@ export class StripeService {
   }
 
   async listSubscriptions(customerId?: string, priceId?: string, status?: string, limit: number = 10) {
+    if (!this.stripe) {
+      throw new Error('Stripe is not configured');
+    }
+    
     try {
       const params: Stripe.SubscriptionListParams = {
         limit,
@@ -278,6 +339,10 @@ export class StripeService {
   }
 
   async cancelSubscription(subscriptionId: string) {
+    if (!this.stripe) {
+      throw new Error('Stripe is not configured');
+    }
+    
     try {
       const subscription = await this.stripe.subscriptions.cancel(subscriptionId);
       this.logger.log(`Cancelled Stripe subscription: ${subscription.id}`);
@@ -289,6 +354,10 @@ export class StripeService {
   }
 
   async updateSubscription(subscriptionId: string, items: Stripe.SubscriptionUpdateParams.Item[], prorationBehavior?: string) {
+    if (!this.stripe) {
+      throw new Error('Stripe is not configured');
+    }
+    
     try {
       const subscription = await this.stripe.subscriptions.update(subscriptionId, {
         items,
@@ -304,6 +373,10 @@ export class StripeService {
   }
 
   async listCoupons(limit: number = 10) {
+    if (!this.stripe) {
+      throw new Error('Stripe is not configured');
+    }
+    
     try {
       const coupons = await this.stripe.coupons.list({ limit });
       this.logger.log(`Retrieved ${coupons.data.length} Stripe coupons`);
@@ -315,6 +388,10 @@ export class StripeService {
   }
 
   async createCoupon(name: string, percentOff?: number, amountOff?: number, currency?: string, duration?: string, durationInMonths?: number) {
+    if (!this.stripe) {
+      throw new Error('Stripe is not configured');
+    }
+    
     try {
       const couponData: Stripe.CouponCreateParams = {
         name,
@@ -347,6 +424,10 @@ export class StripeService {
   }
 
   async listDisputes(chargeId?: string, paymentIntentId?: string, limit: number = 10) {
+    if (!this.stripe) {
+      throw new Error('Stripe is not configured');
+    }
+    
     try {
       const params: Stripe.DisputeListParams = {
         limit,
@@ -364,6 +445,10 @@ export class StripeService {
   }
 
   async updateDispute(disputeId: string, evidence?: Record<string, string>, submit?: boolean) {
+    if (!this.stripe) {
+      throw new Error('Stripe is not configured');
+    }
+    
     try {
       const dispute = await this.stripe.disputes.update(disputeId, {
         ...(evidence && { evidence }),

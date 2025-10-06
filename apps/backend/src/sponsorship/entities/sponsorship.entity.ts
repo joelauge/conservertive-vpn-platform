@@ -31,8 +31,7 @@ export class Sponsorship {
   duration: number; // Duration in months
 
   @Column({
-    type: 'enum',
-    enum: ['active', 'expired', 'cancelled', 'completed'],
+    type: 'varchar',
     default: 'active',
   })
   status: 'active' | 'expired' | 'cancelled' | 'completed';
