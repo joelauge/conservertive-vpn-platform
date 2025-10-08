@@ -1,6 +1,6 @@
 'use client';
 
-import { useUser, SignOutButton } from '@clerk/nextjs';
+import { useUser, SignOutButton, SignInButton } from '@clerk/nextjs';
 import { usePathname } from 'next/navigation';
 
 interface HeaderProps {
@@ -13,7 +13,8 @@ export default function Header({ className = '' }: HeaderProps) {
 
   // Check if Clerk is properly configured
   const isClerkConfigured = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY && 
-    !process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY.includes('YOUR_CLERK_PUBLISHABLE_KEY_HERE');
+    !process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY.includes('YOUR_CLERK_PUBLISHABLE_KEY_HERE') &&
+    !process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY.includes('pk_test_your_clerk_publishable_key_here');
 
   // Check if we're on the dashboard page
   const isOnDashboard = pathname === '/dashboard';
@@ -37,12 +38,20 @@ export default function Header({ className = '' }: HeaderProps) {
           <a href="/our-why" className="text-gray-300 hover:text-white transition-colors text-base font-medium">Our Why</a>
           <a href="/apply-for-account" className="text-gray-300 hover:text-white transition-colors text-base font-medium">Apply for Account</a>
           {!isClerkConfigured ? (
-            <button 
-              className="btn-primary"
-              onClick={() => alert('Please configure Clerk authentication keys in .env.local')}
-            >
-              Get Started
-            </button>
+            <div className="flex items-center space-x-4">
+              <button 
+                className="text-gray-300 hover:text-white transition-colors text-base font-medium"
+                onClick={() => alert('Please configure Clerk authentication keys in .env.local')}
+              >
+                Login
+              </button>
+              <button 
+                className="btn-primary"
+                onClick={() => alert('Please configure Clerk authentication keys in .env.local')}
+              >
+                Get Started
+              </button>
+            </div>
           ) : isLoaded && user ? (
             isOnDashboard ? (
               <SignOutButton>
@@ -56,9 +65,16 @@ export default function Header({ className = '' }: HeaderProps) {
               </a>
             )
           ) : (
-            <a href="/onboarding" className="btn-primary">
-              Get Started
-            </a>
+            <div className="flex items-center space-x-4">
+              <SignInButton mode="modal">
+                <button className="text-gray-300 hover:text-white transition-colors text-base font-medium">
+                  Login
+                </button>
+              </SignInButton>
+              <a href="/onboarding" className="btn-primary">
+                Get Started
+              </a>
+            </div>
           )}
         </div>
       </div>

@@ -2,9 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 
 const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:3001';
 
-// Force dynamic rendering
-export const dynamic = 'force-dynamic';
-
 // Mock data for when backend is not available
 const mockApplicants = [
   {
@@ -71,8 +68,8 @@ const mockApplicants = [
 
 export async function GET(request: NextRequest) {
   try {
-    const url = new URL(request.url);
-    const limit = url.searchParams.get('limit') || '10';
+    const { searchParams } = new URL(request.url);
+    const limit = searchParams.get('limit') || '10';
     
     const response = await fetch(`${BACKEND_URL}/sponsorship-requests/available/applicants?limit=${limit}`, {
       method: 'GET',

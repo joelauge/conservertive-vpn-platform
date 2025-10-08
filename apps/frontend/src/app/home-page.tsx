@@ -21,7 +21,8 @@ export default function HomePage() {
 
   // Check if Clerk is properly configured
   const isClerkConfigured = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY && 
-    !process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY.includes('YOUR_CLERK_PUBLISHABLE_KEY_HERE');
+    !process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY.includes('YOUR_CLERK_PUBLISHABLE_KEY_HERE') &&
+    !process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY.includes('pk_test_your_clerk_publishable_key_here');
 
   const features = [
     {
@@ -371,162 +372,136 @@ export default function HomePage() {
             className="text-center mb-16"
           >
             <h2 className="text-4xl md:text-5xl font-semibold text-white mb-6 leading-tight">
-              Choose Your Plan
+              Choose Your Impact
             </h2>
-            <p className="text-xl text-gray-300 max-w-2xl mx-auto font-light leading-relaxed">
-              Every paid subscription sponsors a free user in a censored country. Your payment fights for internet freedom.
+            <p className="text-xl text-gray-300 max-w-3xl mx-auto font-light leading-relaxed">
+              Your $9.99 subscription automatically sponsors one person in a censored country. 
+              You can choose who to sponsor or let us pick someone who needs help.
             </p>
           </motion.div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {/* Basic Plan */}
+          <div className="max-w-4xl mx-auto">
+            {/* Base Plan - Main Focus */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.1 }}
-              className="card bg-white/10 backdrop-blur-sm border-white/20 relative"
+              className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-8 mb-8"
             >
               <div className="text-center">
-                <h3 className="text-2xl font-semibold text-white mb-2">Basic</h3>
-                <div className="text-4xl font-bold text-white mb-4">
-                  $9.99<span className="text-lg text-gray-400">/month</span>
+                <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                  <span className="bg-gradient-to-r from-green-600 to-blue-600 text-white px-4 py-1 rounded-full text-sm font-semibold">
+                    Most Popular
+                  </span>
                 </div>
-                <ul className="text-gray-300 space-y-3 mb-8">
-                  <li>✓ Military-grade encryption</li>
-                  <li>✓ 3 VPN protocols (OpenVPN, WireGuard, IKEv2)</li>
-                  <li>✓ 50+ global servers</li>
-                  <li>✓ No-logs policy</li>
-                  <li>✓ 24/7 support</li>
+                <h3 className="text-3xl font-semibold text-white mb-4">ConSERVERtive VPN</h3>
+                <div className="text-5xl font-bold text-white mb-4">
+                  $9.99<span className="text-xl text-gray-400">/month</span>
+                </div>
+                <p className="text-gray-300 mb-6 text-lg">
+                  Essential VPN protection + automatic sponsorship
+                </p>
+                
+                <ul className="text-gray-300 space-y-3 mb-8 text-left max-w-md mx-auto">
+                  <li className="flex items-center">
+                    <CheckCircleIcon className="w-5 h-5 text-green-400 mr-3 flex-shrink-0" />
+                    Military-grade encryption
+                  </li>
+                  <li className="flex items-center">
+                    <CheckCircleIcon className="w-5 h-5 text-green-400 mr-3 flex-shrink-0" />
+                    50+ global servers
+                  </li>
+                  <li className="flex items-center">
+                    <CheckCircleIcon className="w-5 h-5 text-green-400 mr-3 flex-shrink-0" />
+                    No-logs policy
+                  </li>
+                  <li className="flex items-center">
+                    <CheckCircleIcon className="w-5 h-5 text-green-400 mr-3 flex-shrink-0" />
+                    24/7 support
+                  </li>
+                  <li className="flex items-center">
+                    <CheckCircleIcon className="w-5 h-5 text-green-400 mr-3 flex-shrink-0" />
+                    <span className="text-green-400 font-semibold">Sponsor 1 person automatically</span>
+                  </li>
                 </ul>
+                
+                <div className="bg-green-500/30 border border-green-500/50 rounded-lg p-6 mb-8 backdrop-blur-sm">
+                  <div className="flex items-center justify-center text-green-400 mb-4">
+                    <HeartIcon className="w-6 h-6 mr-3" />
+                    <span className="text-lg font-semibold">Your Impact</span>
+                  </div>
+                  <p className="text-gray-300">
+                    Your subscription automatically pays for someone in a censored country to access the free internet. 
+                    You can choose who to sponsor or we'll pick someone who needs help.
+                  </p>
+                </div>
+                
                 {!isClerkConfigured ? (
                   <button 
-                    className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 px-6 rounded-lg font-semibold transition-colors"
+                    className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white py-4 px-8 rounded-lg font-semibold transition-all transform hover:scale-105 text-lg"
                     onClick={() => alert('Please configure Clerk authentication keys in .env.local')}
                   >
                     Get Started
                   </button>
                 ) : (
-                  <a href="/onboarding" className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 px-6 rounded-lg font-semibold transition-colors block text-center">
+                  <a href="/onboarding" className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white py-4 px-8 rounded-lg font-semibold transition-all transform hover:scale-105 text-lg block text-center">
                     Get Started
                   </a>
                 )}
               </div>
             </motion.div>
 
-            {/* Premium Plan */}
+            {/* Additional Sponsorship Options */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
-              className="card bg-transparent backdrop-blur-sm border-blue-400/50 relative"
+              className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-8 mb-8"
             >
-              <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                <span className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 py-1 rounded-full text-sm font-semibold">
-                  Most Popular
-                </span>
-              </div>
-              <div className="text-center">
-                <h3 className="text-2xl font-semibold text-white mb-2">Premium</h3>
-                <div className="text-4xl font-bold text-white mb-4">
-                  $19.99<span className="text-lg text-gray-300">/month</span>
+              <div className="text-center mb-6">
+                <h3 className="text-2xl font-semibold text-white mb-4">Add More Sponsorships</h3>
+                <p className="text-gray-300 mb-6">
+                  Each additional sponsorship costs $9.99 and helps another person access the free internet.
+                </p>
+                
+                <div className="grid md:grid-cols-3 gap-6">
+                  <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg p-6">
+                    <h4 className="text-xl font-semibold text-white mb-2">+1 Sponsorship</h4>
+                    <div className="text-3xl font-bold text-white mb-4">$9.99<span className="text-lg text-gray-400">/month</span></div>
+                    <p className="text-gray-300 text-sm">Help one more person access the free internet</p>
+                  </div>
+                  <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg p-6">
+                    <h4 className="text-xl font-semibold text-white mb-2">+3 Sponsorships</h4>
+                    <div className="text-3xl font-bold text-white mb-4">$29.97<span className="text-lg text-gray-400">/month</span></div>
+                    <p className="text-gray-300 text-sm">Help three more people access the free internet</p>
+                  </div>
+                  <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg p-6">
+                    <h4 className="text-xl font-semibold text-white mb-2">+5 Sponsorships</h4>
+                    <div className="text-3xl font-bold text-white mb-4">$49.95<span className="text-lg text-gray-400">/month</span></div>
+                    <p className="text-gray-300 text-sm">Help five more people access the free internet</p>
+                  </div>
                 </div>
-                <ul className="text-gray-200 space-y-3 mb-8">
-                  <li>✓ Everything in Basic</li>
-                  <li>✓ Advanced threat protection</li>
-                  <li>✓ Dark web monitoring</li>
-                  <li>✓ Enterprise-grade protocols</li>
-                  <li>✓ <span className="text-green-400 font-semibold">Sponsor 1 free user</span></li>
-                </ul>
-                {!isClerkConfigured ? (
-                  <button 
-                    className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white py-3 px-6 rounded-lg font-semibold transition-all transform hover:scale-105"
-                    onClick={() => alert('Please configure Clerk authentication keys in .env.local')}
-                  >
-                    Start Sponsoring
-                  </button>
-                ) : (
-                  <SignUpButton mode="modal">
-                    <button className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white py-3 px-6 rounded-lg font-semibold transition-all transform hover:scale-105">
-                      Start Sponsoring
-                    </button>
-                  </SignUpButton>
-                )}
               </div>
             </motion.div>
 
-            {/* Enterprise Plan */}
+            {/* Total Monthly Cost Display */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.3 }}
-              className="card bg-white/10 backdrop-blur-sm border-white/20 relative"
+              className="bg-gradient-to-r from-gray-700/20 to-gray-800/20 backdrop-blur-sm rounded-xl p-8 border border-white/20"
             >
               <div className="text-center">
-                <h3 className="text-2xl font-semibold text-white mb-2">Enterprise</h3>
-                <div className="text-4xl font-bold text-white mb-4">
-                  $49.99<span className="text-lg text-gray-400">/month</span>
+                <h3 className="text-2xl font-semibold text-white mb-4">Total Monthly Cost</h3>
+                <div className="text-4xl font-bold text-white mb-2">
+                  $9.99<span className="text-lg text-gray-400">/month</span>
                 </div>
-                <ul className="text-gray-300 space-y-3 mb-8">
-                  <li>✓ Everything in Premium</li>
-                  <li>✓ Dedicated servers</li>
-                  <li>✓ Priority support</li>
-                  <li>✓ Custom protocol configuration</li>
-                  <li>✓ <span className="text-green-400 font-semibold">Sponsor 5 free users</span></li>
-                </ul>
-                {!isClerkConfigured ? (
-                  <button 
-                    className="w-full bg-gray-600 hover:bg-gray-700 text-white py-3 px-6 rounded-lg font-semibold transition-colors"
-                    onClick={() => alert('Please configure Clerk authentication keys in .env.local')}
-                  >
-                    Contact Sales
-                  </button>
-                ) : (
-                  <SignUpButton mode="modal">
-                    <button className="w-full bg-gray-600 hover:bg-gray-700 text-white py-3 px-6 rounded-lg font-semibold transition-colors">
-                      Contact Sales
-                    </button>
-                  </SignUpButton>
-                )}
-              </div>
-            </motion.div>
-
-            {/* Direct Sponsorship */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.4 }}
-              className="card bg-transparent backdrop-blur-sm border-green-400/50 relative"
-            >
-              <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                <span className="bg-gradient-to-r from-green-600 to-blue-600 text-white px-4 py-1 rounded-full text-sm font-semibold">
-                  Direct Impact
-                </span>
-              </div>
-              <div className="text-center">
-                <h3 className="text-2xl font-semibold text-white mb-2">Sponsor</h3>
-                <div className="text-4xl font-bold text-white mb-4">
-                  $9.99<span className="text-lg text-gray-300">/month</span>
+                <p className="text-gray-300">
+                  Base VPN subscription + automatic sponsorship
+                </p>
+                <div className="mt-4 text-green-400 font-semibold">
+                  ✓ Automatically sponsors 1 person in a censored country
                 </div>
-                <ul className="text-gray-200 space-y-3 mb-8">
-                  <li>✓ <span className="text-green-400 font-semibold">Sponsor 1 free user</span></li>
-                  <li>✓ Direct impact tracking</li>
-                  <li>✓ Monthly impact reports</li>
-                  <li>✓ Community recognition</li>
-                </ul>
-                {!isClerkConfigured ? (
-                  <button 
-                    className="w-full bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 text-white py-3 px-6 rounded-lg font-semibold transition-all transform hover:scale-105"
-                    onClick={() => alert('Please configure Clerk authentication keys in .env.local')}
-                  >
-                    Make Impact
-                  </button>
-                ) : (
-                  <SignUpButton mode="modal">
-                    <button className="w-full bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 text-white py-3 px-6 rounded-lg font-semibold transition-all transform hover:scale-105">
-                      Make Impact
-                    </button>
-                  </SignUpButton>
-                )}
               </div>
             </motion.div>
           </div>

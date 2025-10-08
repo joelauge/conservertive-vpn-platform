@@ -115,8 +115,11 @@ function OnboardingContent() {
     // Handle user authentication state
     if (isLoaded) {
       if (user && currentStep === 1) {
-        setCurrentStep(2);
-        setError(null);
+        // User is authenticated, move to next step
+        setTimeout(() => {
+          setCurrentStep(2);
+          setError(null);
+        }, 2000);
       } else if (!user && currentStep > 1) {
         // If user is not authenticated but we're past step 1, redirect to step 1
         setCurrentStep(1);

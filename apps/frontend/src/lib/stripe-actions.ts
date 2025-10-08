@@ -171,6 +171,7 @@ function getPlanName(planId: string): string {
     premium: 'ConSERVERtive Premium',
     enterprise: 'ConSERVERtive Enterprise',
     sponsor: 'ConSERVERtive Sponsor',
+    base: 'ConSERVERtive Base Plan',
   };
   return plans[planId as keyof typeof plans] || 'ConSERVERtive Plan';
 }
@@ -181,6 +182,7 @@ function getPlanDescription(planId: string): string {
     premium: 'Advanced protection with threat monitoring and sponsorship',
     enterprise: 'Maximum impact with dedicated servers and priority support',
     sponsor: 'Direct sponsorship to help users in censored countries',
+    base: 'Base VPN protection with automatic sponsorship',
   };
   return descriptions[planId as keyof typeof descriptions] || 'VPN protection and internet freedom';
 }
@@ -191,6 +193,7 @@ function getPlanPrice(planId: string): number {
     premium: 19.99,
     enterprise: 49.99,
     sponsor: 9.99,
+    base: 9.99,
   };
   return prices[planId as keyof typeof prices] || 9.99;
 }
