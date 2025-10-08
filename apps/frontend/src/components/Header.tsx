@@ -14,7 +14,8 @@ export default function Header({ className = '' }: HeaderProps) {
   // Check if Clerk is properly configured
   const isClerkConfigured = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY && 
     !process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY.includes('YOUR_CLERK_PUBLISHABLE_KEY_HERE') &&
-    !process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY.includes('pk_test_your_clerk_publishable_key_here');
+    !process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY.includes('pk_test_your_clerk_publishable_key_here') &&
+    process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY.length > 20;
 
   // Check if we're on the dashboard page
   const isOnDashboard = pathname === '/dashboard';
