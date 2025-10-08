@@ -8,6 +8,7 @@ interface HeaderProps {
 }
 
 export default function Header({ className = '' }: HeaderProps) {
+  // Force rebuild for production deployment
   const { user, isLoaded } = useUser();
   const pathname = usePathname();
 
