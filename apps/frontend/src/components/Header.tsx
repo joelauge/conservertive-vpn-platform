@@ -18,6 +18,9 @@ export default function Header({ className = '' }: HeaderProps) {
     !process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY.includes('pk_test_your_clerk_publishable_key_here') &&
     process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY.length > 20;
 
+  // Debug: Log the Clerk configuration status
+  console.log('Clerk configured:', isClerkConfigured, 'Key length:', process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY?.length);
+
   // Check if we're on the dashboard page
   const isOnDashboard = pathname === '/dashboard';
 
