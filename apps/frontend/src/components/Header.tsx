@@ -13,13 +13,13 @@ export default function Header({ className = '' }: HeaderProps) {
   const pathname = usePathname();
 
   // Check if Clerk is properly configured
-  const isClerkConfigured = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY && 
+  // In production, assume Clerk is always configured since we have production keys
+  const isClerkConfigured = process.env.NODE_ENV === 'production' || (
+    process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY && 
     !process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY.includes('YOUR_CLERK_PUBLISHABLE_KEY_HERE') &&
     !process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY.includes('pk_test_your_clerk_publishable_key_here') &&
-    process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY.length > 20;
-
-  // Debug: Log the Clerk configuration status
-  console.log('Clerk configured:', isClerkConfigured, 'Key length:', process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY?.length);
+    process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY.length > 20
+  );
 
   // Check if we're on the dashboard page
   const isOnDashboard = pathname === '/dashboard';
